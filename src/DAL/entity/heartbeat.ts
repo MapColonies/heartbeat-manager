@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryColumn, Index } from 'typeorm';
 @Entity('Heartbeat')
 export class HeartbeatEntity {
   @PrimaryColumn('varchar', { length: 60 })
-  public taskId: string;
+  public id: string;
 
   @Index()
   @Column()

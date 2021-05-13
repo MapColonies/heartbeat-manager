@@ -14,9 +14,9 @@ export class HeartbeatRepository extends Repository<HeartbeatEntity> {
     this.appLogger = container.resolve(Services.LOGGER);
   }
 
-  public async pulse(taskId: string): Promise<void> {
+  public async pulse(id: string): Promise<void> {
     const entity = new HeartbeatEntity({
-      taskId,
+      id: id,
       lastHeartbeat: new Date(),
     });
     await this.save(entity);
@@ -29,6 +29,6 @@ export class HeartbeatRepository extends Repository<HeartbeatEntity> {
         lastHeartbeat: LessThan(expiration),
       },
     });
-    return entities.map((entity) => entity.taskId);
+    return entities.map((entity) => entity.id);
   }
 }

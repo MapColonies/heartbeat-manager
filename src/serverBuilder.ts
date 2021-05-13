@@ -10,6 +10,7 @@ import httpLogger from '@map-colonies/express-access-log-middleware';
 import { Services } from './common/constants';
 import { IConfig } from './common/interfaces';
 import { heartbeatRouterFactory } from './heartbeat/routes/heartbeatRouter';
+import { getErrorLoggerMiddleware } from './common/errorLogger';
 
 @injectable()
 export class ServerBuilder {
@@ -53,6 +54,7 @@ export class ServerBuilder {
   }
 
   private registerPostRoutesMiddleware(): void {
+    this.serverInstance.use(getErrorLoggerMiddleware());
     this.serverInstance.use(getErrorHandlerMiddleware());
   }
 }
