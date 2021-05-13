@@ -8,7 +8,7 @@ info:
     url: https://opensource.org/licenses/MIT
 
 paths:
-  /heartbeat/${heartbeatDuration}:
+  /heartbeat/expired/{heartbeatDuration}:
     parameters:
       - $ref: '#/components/parameters/heartbeatDuration'
     get:
@@ -23,9 +23,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/taskIds'
-  /heartbeat/${taskId}:
+  /heartbeat/{id}:
     parameters:
-      - $ref: '#/components/parameters/taskId'
+      - $ref: '#/components/parameters/id'
     post:
       operationId: storeHeartbeat
       tags:
@@ -43,9 +43,9 @@ components:
       required: true
       schema:
         type: integer
-    taskId:
+    id:
       in: path
-      name: taskId
+      name: id
       description: task to log heartbeat for
       required: true
       schema:

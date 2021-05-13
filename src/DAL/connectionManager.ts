@@ -15,13 +15,13 @@ export class ConnectionManager {
 
   public async init(): Promise<void> {
     const connectionConfig = this.config.get<IDbConfig>('typeOrm');
-    this.logger.log('info', `connection to database ${connectionConfig.database as string} on ${connectionConfig.host as string}`);
+    this.logger.info(`connection to database ${connectionConfig.database as string} on ${connectionConfig.host as string}`);
 
     try {
       this.connection = await createConnection(this.createConnectionOptions(connectionConfig));
     } catch (err) {
       const errString = JSON.stringify(err, Object.getOwnPropertyNames(err));
-      this.logger.log('error', `failed to connect to database: ${errString}`);
+      this.logger.error(`failed to connect to database: ${errString}`);
       throw new DBConnectionError();
     }
   }
@@ -46,7 +46,7 @@ export class ConnectionManager {
   private getRepository<T>(repository: ObjectType<T>): T {
     if (!this.isConnected()) {
       const msg = 'failed to send request to database: no open connection';
-      this.logger.log('error', msg);
+      this.logger.error(msg);
       throw new DBConnectionError();
     } else {
       const connection = this.connection as Connection;

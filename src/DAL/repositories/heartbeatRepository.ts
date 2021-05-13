@@ -23,10 +23,10 @@ export class HeartbeatRepository extends Repository<HeartbeatEntity> {
   }
 
   public async findExpired(duration: number): Promise<string[]> {
-    const experation = new Date(Date.now() - duration);
+    const expiration = new Date(Date.now() - duration);
     const entities = await this.find({
       where: {
-        lastHeartbeat: LessThan(experation),
+        lastHeartbeat: LessThan(expiration),
       },
     });
     return entities.map((entity) => entity.taskId);

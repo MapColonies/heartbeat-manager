@@ -9,7 +9,7 @@ import { Logger } from '@map-colonies/js-logger';
 import httpLogger from '@map-colonies/express-access-log-middleware';
 import { Services } from './common/constants';
 import { IConfig } from './common/interfaces';
-import { resourceNameRouterFactory } from './resourceName/routes/resourceNameRouter';
+import { heartbeatRouterFactory } from './heartbeat/routes/heartbeatRouter';
 
 @injectable()
 export class ServerBuilder {
@@ -34,7 +34,7 @@ export class ServerBuilder {
   }
 
   private buildRoutes(): void {
-    this.serverInstance.use('/resourceName', resourceNameRouterFactory(container));
+    this.serverInstance.use('/heartbeat', heartbeatRouterFactory(container));
     this.buildDocsRoutes();
   }
 
