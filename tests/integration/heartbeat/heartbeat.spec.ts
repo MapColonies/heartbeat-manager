@@ -36,7 +36,7 @@ describe('heartbeat', function () {
   });
 
   describe('Happy Path', function () {
-    it('should return status 200 and the resource expired tasks', async function () {
+    it('getExpiredHeartbeats should return status 200 and the expired tasks', async function () {
       const duration = 350000;
       const matchingIds = ['1', '2'];
       const entities = [{ id: '1' }, { id: '2' }];
@@ -52,7 +52,7 @@ describe('heartbeat', function () {
       expect(heartbeatRepositoryMocks.findMock).toHaveBeenCalledTimes(1);
     });
 
-    it('should return 200 status code and save the heartbeat pulse', async function () {
+    it('pulse should return 200 status code and save the heartbeat pulse', async function () {
       const id = '1';
       const entity = ({
         id: id,
@@ -66,7 +66,7 @@ describe('heartbeat', function () {
       expect(heartbeatRepositoryMocks.saveMock).toHaveBeenCalledWith(entity);
     });
 
-    it('should return 200 status code and remove records from db', async () => {
+    it('removeHeartbeats should return 200 status code and remove records from db', async () => {
       const ids = ['id1', 'id2'];
       const expectedIds = ids.map((id) => ({ id }));
       heartbeatRepositoryMocks.removeMock.mockResolvedValue(expectedIds);
@@ -80,7 +80,7 @@ describe('heartbeat', function () {
   });
 
   describe('Bad Path', function () {
-    it('should return 400 when data is not string array', async () => {
+    it('removeHeartbeats should return 400 when data is not string array', async () => {
       const data = {
         id: 'id1',
       };

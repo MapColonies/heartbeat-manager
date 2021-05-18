@@ -1,5 +1,4 @@
 import { Logger } from '@map-colonies/js-logger';
-import { Meter } from '@map-colonies/telemetry';
 import { BoundCounter } from '@opentelemetry/api-metrics';
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status-codes';
@@ -17,11 +16,8 @@ export class HeartbeatController {
 
   public constructor(
     @inject(Services.LOGGER) private readonly logger: Logger,
-    @inject(HeartbeatManager) private readonly manager: HeartbeatManager,
-    @inject(Services.METER) private readonly meter: Meter
-  ) {
-    this.createdResourceCounter = meter.createCounter('created_resource');
-  }
+    @inject(HeartbeatManager) private readonly manager: HeartbeatManager
+  ) {}
 
   public getExpiredHeartbeats: GetExpiredHeartbeatsHandler = async (req, res, next) => {
     try {
