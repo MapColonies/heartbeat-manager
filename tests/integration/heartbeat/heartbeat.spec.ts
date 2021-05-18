@@ -1,5 +1,6 @@
 import httpStatusCodes from 'http-status-codes';
 import { container } from 'tsyringe';
+import { HeartbeatEntity } from '../../../src/DAL/entity/heartbeat';
 import { HeartbeatRepository } from '../../../src/DAL/repositories/heartbeatRepository';
 import { RepositoryMocks, initTypeOrmMocks, registerRepository, lessThanMock } from '../../mocks/DBMock';
 import { registerTestValues } from '../testContainerConfig';
@@ -9,12 +10,17 @@ let heartbeatRepositoryMocks: RepositoryMocks;
 let repositoryMock: HeartbeatRepository;
 
 const now = 1620894317;
+const nowDate = new Date(now);
 
 describe('heartbeat', function () {
+  beforeAll(() => {
+    jest.useFakeTimers('modern');
+    jest.setSystemTime(nowDate);
+  });
+
   beforeEach(function () {
     registerTestValues();
     requestSender.init();
-    jest.spyOn(Date, 'now').mockReturnValue(now);
     initTypeOrmMocks();
     repositoryMock = new HeartbeatRepository();
     heartbeatRepositoryMocks = registerRepository(HeartbeatRepository, repositoryMock);
@@ -23,6 +29,10 @@ describe('heartbeat', function () {
   afterEach(function () {
     container.clearInstances();
     jest.resetAllMocks();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
   });
 
   describe('Happy Path', function () {
@@ -44,10 +54,10 @@ describe('heartbeat', function () {
 
     it('should return 200 status code and save the heartbeat pulse', async function () {
       const id = '1';
-      const entity = {
+      const entity = ({
         id: id,
-        lastHeartbeat: new Date(now),
-      };
+        lastHeartbeat: nowDate,
+      } as unknown) as HeartbeatEntity;
 
       const response = await requestSender.pulse(id);
 
@@ -55,11 +65,5 @@ describe('heartbeat', function () {
       expect(heartbeatRepositoryMocks.saveMock).toHaveBeenCalledTimes(1);
       expect(heartbeatRepositoryMocks.saveMock).toHaveBeenCalledWith(entity);
     });
-  });
-  describe('Bad Path', function () {
-    // All requests with status code of 400
-  });
-  describe('Sad Path', function () {
-    // All requests with status code 4XX-5XX
   });
 });
