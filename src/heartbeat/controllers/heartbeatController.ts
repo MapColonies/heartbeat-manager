@@ -5,10 +5,11 @@ import { RequestHandler } from 'express';
 import httpStatus from 'http-status-codes';
 import { injectable, inject } from 'tsyringe';
 import { Services } from '../../common/constants';
-import { HeartbeatManager, IGetExpiredHeartbeatsRequest, IPulseRequest } from '../models/heartbeatManager';
+import { HeartbeatManager, IGetExpiredHeartbeatsRequest, IPulseRequest, RemoveHeartbeatsRequest } from '../models/heartbeatManager';
 
 type PulseHandler = RequestHandler<IPulseRequest>;
 type GetExpiredHeartbeatsHandler = RequestHandler<IGetExpiredHeartbeatsRequest, string[]>;
+type RemoveHeartbeatHandler = RequestHandler<undefined, undefined, RemoveHeartbeatsRequest>;
 
 @injectable()
 export class HeartbeatController {
@@ -34,6 +35,15 @@ export class HeartbeatController {
   public pulse: PulseHandler = async (req, res, next) => {
     try {
       await this.manager.pulse(req.params);
+      return res.sendStatus(httpStatus.OK);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public removeHeartbeats: RemoveHeartbeatHandler = async (req, res, next) => {
+    try {
+      await this.manager.removeHeartbeats(req.body);
       return res.sendStatus(httpStatus.OK);
     } catch (err) {
       next(err);

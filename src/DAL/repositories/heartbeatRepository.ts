@@ -31,4 +31,11 @@ export class HeartbeatRepository extends Repository<HeartbeatEntity> {
     });
     return entities.map((entity) => entity.id);
   }
+
+  public async removeHeartbeats(ids: string[]): Promise<number> {
+    const entities = (ids.map((id) => ({ id })) as unknown) as HeartbeatEntity[];
+    const deleted = await this.remove(entities);
+    this.appLogger.debug(`removed heartbeats: ${deleted.map((entity) => entity.id).join()}`);
+    return deleted.length;
+  }
 }

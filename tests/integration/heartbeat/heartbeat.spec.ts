@@ -65,5 +65,29 @@ describe('heartbeat', function () {
       expect(heartbeatRepositoryMocks.saveMock).toHaveBeenCalledTimes(1);
       expect(heartbeatRepositoryMocks.saveMock).toHaveBeenCalledWith(entity);
     });
+
+    it('should return 200 status code and remove records from db', async () => {
+      const ids = ['id1', 'id2'];
+      const expectedIds = ids.map((id) => ({ id }));
+      heartbeatRepositoryMocks.removeMock.mockResolvedValue(expectedIds);
+
+      const response = await requestSender.removeHeartbeats(ids);
+
+      expect(response.status).toBe(httpStatusCodes.OK);
+      expect(heartbeatRepositoryMocks.removeMock).toHaveBeenCalledTimes(1);
+      expect(heartbeatRepositoryMocks.removeMock).toHaveBeenCalledWith(expectedIds);
+    });
+  });
+
+  describe('Bad Path', function () {
+    it('should return 400 when data is not string array', async () => {
+      const data = {
+        id: 'id1',
+      };
+
+      const response = await requestSender.removeHeartbeats(data);
+
+      expect(response.status).toBe(httpStatusCodes.BAD_REQUEST);
+    });
   });
 });

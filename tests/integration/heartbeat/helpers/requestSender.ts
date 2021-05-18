@@ -18,3 +18,7 @@ export async function getExpiredHeartbeats(duration: number): Promise<supertest.
 export async function pulse(id: string): Promise<supertest.Response> {
   return supertest.agent(app).post(`/heartbeat/${id}`).set('Content-Type', 'application/json');
 }
+
+export async function removeHeartbeats(ids: string[] | Record<string, unknown>): Promise<supertest.Response> {
+  return supertest.agent(app).post(`/heartbeat/remove`).set('Content-Type', 'application/json').send(ids);
+}

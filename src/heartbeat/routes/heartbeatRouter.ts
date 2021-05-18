@@ -7,6 +7,7 @@ const heartbeatRouterFactory: FactoryFunction<Router> = (dependencyContainer) =>
   const controller = dependencyContainer.resolve(HeartbeatController);
 
   router.get('/expired/:duration', controller.getExpiredHeartbeats);
+  router.post('/remove', controller.removeHeartbeats);
   router.post('/:id', controller.pulse);
 
   return router;

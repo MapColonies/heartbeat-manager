@@ -22,7 +22,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/taskIds'
+                $ref: '#/components/schemas/idList'
   /heartbeat/{id}:
     parameters:
       - $ref: '#/components/parameters/id'
@@ -34,12 +34,27 @@ paths:
       responses:
         200:
           description: ok
+  /heartbeat/remove:
+    post:
+      operationId: removeHeartbeatRecords
+      tags:
+        - Heartbeat
+      summary: removes heartbeat records from db
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/idList'
+      responses:
+        200:
+          description: ok
 components:
   parameters:
     heartbeatDuration:
       in: path
       name: heartbeatDuration
-      description: specific amount of milisecounds to be considered as expired heartbeat
+      description: specific amount of milliseconds to be considered as expired heartbeat
       required: true
       schema:
         type: integer
@@ -51,7 +66,10 @@ components:
       schema:
         type: string
   schemas:
-    taskIds:
+    idList:
       type: array
       items:
         type: string
+      example:
+        - id1
+        - id2

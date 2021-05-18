@@ -12,6 +12,8 @@ export interface IGetExpiredHeartbeatsRequest {
   duration: number;
 }
 
+export type RemoveHeartbeatsRequest = string[];
+
 @injectable()
 export class HeartbeatManager {
   private repository?: HeartbeatRepository;
@@ -28,6 +30,12 @@ export class HeartbeatManager {
     this.logger.debug(`retrieving task without heartbeat for at least ${req.duration} ms`);
     const repo = await this.getRepository();
     return repo.findExpired(req.duration);
+  }
+
+  public async removeHeartbeats(req: RemoveHeartbeatsRequest): Promise<void> {
+    this.logger.debug(`removing heartbeats: ${req.join()}`);
+    const repo = await this.getRepository();
+    await repo.removeHeartbeats(req);
   }
 
   private async getRepository(): Promise<HeartbeatRepository> {
