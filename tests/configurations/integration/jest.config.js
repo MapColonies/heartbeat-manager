@@ -29,4 +29,7 @@ module.exports = {
       statements: -10,
     },
   },
+  moduleNameMapper: {
+    mockService: '<rootDir>/tests/__mocks__',
+  },
 };

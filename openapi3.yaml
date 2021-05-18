@@ -1,64 +1,75 @@
 openapi: 3.0.1
 info:
-  title: service-name
-  description: basic template for map colonies service
+  title: heartbeat manager
+  description: heartbeat storage service
   version: 1.0.0
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
 
 paths:
-  /resourceName:
+  /heartbeat/expired/{heartbeatDuration}:
+    parameters:
+      - $ref: '#/components/parameters/heartbeatDuration'
     get:
-      operationId: getResourceName
+      operationId: GetExpiredHeartbeats
       tags:
-        - resourceName
-      summary: gets the resource
+        - Heartbeat
+      summary: gets ids of tasks with expired heartbeats based on the specified duration
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/resource'
+                $ref: '#/components/schemas/idList'
+  /heartbeat/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
     post:
-      operationId: createResource
+      operationId: storeHeartbeat
       tags:
-        - resourceName
-      summary: creates a new record of type resource
+        - Heartbeat
+      summary: creates or updates a heartbeat record for specified task id
       responses:
-        201:
-          description: created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/resource'
-        400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
+        200:
+          description: ok
+  /heartbeat/remove:
+    post:
+      operationId: removeHeartbeatRecords
+      tags:
+        - Heartbeat
+      summary: removes heartbeat records from db
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/idList'
+      responses:
+        200:
+          description: ok
 components:
+  parameters:
+    heartbeatDuration:
+      in: path
+      name: heartbeatDuration
+      description: specific amount of milliseconds to be considered as expired heartbeat
+      required: true
+      schema:
+        type: integer
+    id:
+      in: path
+      name: id
+      description: task to log heartbeat for
+      required: true
+      schema:
+        type: string
   schemas:
-    error:
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          type: string
-    resource:
-      type: object
-      required:
-        - id
-        - name
-        - description
-      properties:
-        id:
-          type: number
-          format: int64
-        name:
-          type: string
-        description:
-          type: string
+    idList:
+      type: array
+      items:
+        type: string
+      example:
+        - id1
+        - id2
