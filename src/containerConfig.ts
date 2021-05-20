@@ -3,7 +3,9 @@ import config from 'config';
 import { logMethod } from '@map-colonies/telemetry';
 import jsLogger, { LoggerOptions } from '@map-colonies/js-logger';
 import { Tracing, Metrics } from '@map-colonies/telemetry';
+import { Probe } from '@map-colonies/mc-probe';
 import { Services } from './common/constants';
+import { probeFactory } from './probeFactory';
 
 function registerExternalValues(tracing: Tracing): void {
   const loggerConfig = config.get<LoggerOptions>('logger');
@@ -22,6 +24,9 @@ function registerExternalValues(tracing: Tracing): void {
     useValue: async (): Promise<void> => {
       await Promise.all([tracing.stop(), metrics.stop()]);
     },
+  });
+  container.register<Probe>(Probe, {
+    useFactory: probeFactory,
   });
 }
 
