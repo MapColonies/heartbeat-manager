@@ -11,8 +11,8 @@
 ----------------------------------
 
 ## Service info
-this service is heartbeat server used to log the last heartbeat for worker of specific task.
-a least of tasks that didn't received new heartbeat pulse for specified duration can then be retrieved and used by other services
+This service is heartbeat server used to log the last heartbeat for worker of a specific task.
+A list of tasks that didn't received new heartbeat pulse for specified duration can then be retrieved and used by other services
 ## API
 Checkout the OpenAPI spec [here](/openapi3.yaml)
 
