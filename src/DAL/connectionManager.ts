@@ -16,7 +16,8 @@ export class ConnectionManager {
 
   public async init(): Promise<void> {
     const connectionConfig = this.config.get<IDbConfig>('typeOrm');
-    this.logger.log('info', `connection to database ${connectionConfig.database as string} on ${connectionConfig.host as string}`);
+    this.logger.info(`connection to database ${connectionConfig.database as string} on ${connectionConfig.host as string}`);
+
     try {
       if (this.connectionStatusPromise === undefined) {
         this.connectionStatusPromise = createConnection(this.createConnectionOptions(connectionConfig));
@@ -24,7 +25,7 @@ export class ConnectionManager {
       this.connection = await this.connectionStatusPromise;
     } catch (err) {
       const errString = JSON.stringify(err, Object.getOwnPropertyNames(err));
-      this.logger.log('error', `failed to connect to database: ${errString}`);
+      this.logger.error(`failed to connect to database: ${errString}`);
       throw new DBConnectionError();
     }
   }
