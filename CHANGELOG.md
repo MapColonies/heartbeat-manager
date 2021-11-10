@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.3](https://github.com/MapColonies/heartbeat-manager/compare/v1.0.2...v1.0.3) (2021-11-10)
+
+
+### Bug Fixes
+
+* connection duplication ([#7](https://github.com/MapColonies/heartbeat-manager/issues/7)) ([2354e7e](https://github.com/MapColonies/heartbeat-manager/commit/2354e7ef6085a2ce27609f80e3a75bad8bcb37ba))
+* service versioning ([#8](https://github.com/MapColonies/heartbeat-manager/issues/8)) ([837fc53](https://github.com/MapColonies/heartbeat-manager/commit/837fc537614a9ca4bdcb5df8e143706c56b54344))
+
 ### [1.0.2](https://github.com/MapColonies/heartbeat-manager/compare/v1.0.1...v1.0.2) (2021-11-07)
 
 ### [1.0.1](https://github.com/MapColonies/heartbeat-manager/compare/v1.0.0...v1.0.1) (2021-06-08)
