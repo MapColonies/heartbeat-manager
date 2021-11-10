@@ -10,6 +10,7 @@ import { HeartbeatRepository } from './repositories/heartbeatRepository';
 @singleton()
 export class ConnectionManager {
   private connection?: Connection;
+  private connectionStatusPromise?: Promise<Connection>;
 
   public constructor(@inject(Services.LOGGER) private readonly logger: Logger, @inject(Services.CONFIG) private readonly config: IConfig) {}
 
@@ -18,7 +19,10 @@ export class ConnectionManager {
     this.logger.info(`connection to database ${connectionConfig.database as string} on ${connectionConfig.host as string}`);
 
     try {
-      this.connection = await createConnection(this.createConnectionOptions(connectionConfig));
+      if (this.connectionStatusPromise === undefined) {
+        this.connectionStatusPromise = createConnection(this.createConnectionOptions(connectionConfig));
+      }
+      this.connection = await this.connectionStatusPromise;
     } catch (err) {
       const errString = JSON.stringify(err, Object.getOwnPropertyNames(err));
       this.logger.error(`failed to connect to database: ${errString}`);
