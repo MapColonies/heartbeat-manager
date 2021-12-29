@@ -13,7 +13,7 @@ data:
   REQUEST_PAYLOAD_LIMIT: {{ .Values.env.requestPayloadLimit | quote }}
   RESPONSE_COMPRESSION_ENABLED: {{ .Values.env.responseCompressionEnabled | quote }}
   DB_HOST: {{ .Values.env.db.host | quote }}
-  DB_PORT: {{ .Values.env.db.port }}
+  DB_PORT: {{ .Values.env.db.port | quote }}
   DB_NAME: {{ .Values.env.db.database | quote }}
   DB_LOGGING: {{ .Values.env.db.logging | quote }}
   DB_SSL_ENABLE: {{ .Values.env.db.sslEnabled | quote }}
