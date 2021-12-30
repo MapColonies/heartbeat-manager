@@ -1,10 +1,12 @@
 global:
-  cloudProvider: {}
+  dockerRegistryUrl: acrarolibotnonprod.azurecr.io
+  imagePullSecretName: acr-registry
+  flavor: openshift
   tracing: {}
   metrics: {}
   environment: {}
   db:
-    host: "localhost"
+    host: "10.8.1.4"
     port: 5432
     sslEnabled: false
     secrets:
@@ -22,7 +24,7 @@ cloudProvider:
   imagePullSecretName: "my-registry-secret"
 
 image:
-  repository: "heartbeat-manager-registry"
+  repository: "heartbeat-manager"
   tag: "latest"
 
 local:
@@ -52,7 +54,7 @@ env:
     enabled: false
     url: "http://localhost:55681/v1/metrics"      
   db:
-    database: "raster-heartbeat-manager"
+    database: "raster-heartbeat-manager-dev"
     logging: false
   
 resources:
