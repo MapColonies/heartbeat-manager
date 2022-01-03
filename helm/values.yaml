@@ -3,7 +3,13 @@ global:
   tracing: {}
   metrics: {}
   environment: {}
-
+  db:
+    host: "localhost"
+    port: 5432
+    sslEnabled: false
+    secrets:
+      useExternal: false
+      externalSecretName: ""
 enabled: true
 environment: "development"
 replicaCount: 1
@@ -13,6 +19,7 @@ nodePort: 30030 #for minikube deployment only
 cloudProvider:
   dockerRegistryUrl: "my-registry-url.io"
   flavor: "openshift"
+  imagePullSecretName: "my-registry-secret"
 
 image:
   repository: "heartbeat-manager-registry"
@@ -27,8 +34,6 @@ local:
 
 postgresSecret:
   enabled: true
-  useExternal: false
-  externalSecretName:
   userName: "postgres"
   password: "postgres"
 
@@ -47,11 +52,8 @@ env:
     enabled: false
     url: "http://localhost:55681/v1/metrics"      
   db:
-    host: "localhost"
-    port: 5432
     database: "raster-heartbeat-manager"
     logging: false
-    sslEnabled: false
   
 resources:
   enabled: true
