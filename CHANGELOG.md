@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.4](https://github.com/MapColonies/heartbeat-manager/compare/v1.0.3...v1.0.4) (2022-01-10)
+
+
+### Bug Fixes
+
+* fixed port quote ([#9](https://github.com/MapColonies/heartbeat-manager/issues/9)) ([c9fd5d1](https://github.com/MapColonies/heartbeat-manager/commit/c9fd5d1a60c80eb1252dec2b8e92e0de0ffd3ff3))
+
 ### [1.0.3](https://github.com/MapColonies/heartbeat-manager/compare/v1.0.2...v1.0.3) (2021-11-10)
 
 
