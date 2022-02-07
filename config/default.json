@@ -34,7 +34,8 @@
       "key": "",
       "cert": ""
     },
-    "database": "heartbeat-manager",
+    "database": "raster",
+    "schema": "public",
     "synchronize": false,
     "logging": false,
     "entities": ["**/DAL/entity/**/*.js"],
