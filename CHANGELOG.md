@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/MapColonies/heartbeat-manager/compare/v1.0.4...v1.1.0) (2022-02-09)
+
+
+### Features
+
+* add db schema ([#11](https://github.com/MapColonies/heartbeat-manager/issues/11)) ([3bb62ad](https://github.com/MapColonies/heartbeat-manager/commit/3bb62ad5a1c14d52f8a0441ad1d461080cc806fc))
+
 ### [1.0.4](https://github.com/MapColonies/heartbeat-manager/compare/v1.0.3...v1.0.4) (2022-01-10)
 
 
