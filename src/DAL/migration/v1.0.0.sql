@@ -1,4 +1,4 @@
-SET SCHEMA 'public'; -- CHANGE SCHEMA NAME TO MATCH ENVIRONMENT
+SET search_path TO "HeartbeatManager", public; -- CHANGE SCHEMA NAME TO MATCH ENVIRONMENT
 CREATE TABLE "Heartbeat"
 (
     "id" character varying(60) COLLATE pg_catalog."default" NOT NULL,
