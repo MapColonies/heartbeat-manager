@@ -18,6 +18,10 @@ data:
   DB_SCHEMA: {{ .Values.env.db.schema | quote }}
   DB_LOGGING: {{ .Values.env.db.logging | quote }}
   DB_SSL_ENABLE: {{ .Values.global.db.sslEnabled | quote }}
+  DB_SSL_CA: {{ .Values.env.db.ssl.CA_FILE_LOCATION | quote }}
+  DB_SSL_KEY: {{ .Values.env.db.ssl.KEY_FILE_LOCATION | quote }}
+  DB_SSL_CERT: {{ .Values.env.db.ssl.CERT_FILE_LOCATION | quote }}
+  DB_SSL_REJECT_UNAUTHORIZED: {{ .Values.global.db.rejectUnauthorized | quote }}
   {{ if .Values.env.tracing.enabled }}
   TELEMETRY_TRACING_ENABLED: 'true'
   TELEMETRY_TRACING_URL: {{ $tracingUrl }}

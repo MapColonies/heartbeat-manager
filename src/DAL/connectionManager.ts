@@ -39,10 +39,15 @@ export class ConnectionManager {
   }
 
   private createConnectionOptions(dbConfig: IDbConfig): ConnectionOptions {
-    const { enableSslAuth, sslPaths, ...connectionOptions } = dbConfig;
+    const { enableSslAuth, rejectUnauthorized, sslPaths, ...connectionOptions } = dbConfig;
     if (enableSslAuth) {
       connectionOptions.password = undefined;
-      connectionOptions.ssl = { key: readFileSync(sslPaths.key), cert: readFileSync(sslPaths.cert), ca: readFileSync(sslPaths.ca) };
+      connectionOptions.ssl = {
+        key: readFileSync(sslPaths.key),
+        cert: readFileSync(sslPaths.cert),
+        ca: readFileSync(sslPaths.ca),
+        rejectUnauthorized: rejectUnauthorized,
+      };
     }
     return connectionOptions;
   }

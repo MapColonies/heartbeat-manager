@@ -36,6 +36,10 @@
       "__name": "DB_SSL_ENABLE",
       "__format": "boolean"
     },
+    "rejectUnauthorized": {
+      "__name": "DB_SSL_REJECT_UNAUTHORIZED",
+      "__format": "boolean"
+    },
     "sslPaths": {
       "ca": "DB_SSL_CA",
       "key": "DB_SSL_KEY",
