@@ -69,4 +69,34 @@ spec:
           resources:
             {{- toYaml .Values.resources.value | nindent 12 }}
           {{- end }}
+          volumeMounts:
+          {{- if .Values.global.db.sslEnabled }}
+            - mountPath: {{ .Values.env.db.ssl.CA_DIR }}
+              name: ca-file
+            - mountPath: {{ .Values.env.db.ssl.KEY_DIR }}
+              name: key-file
+            - mountPath: {{ .Values.env.db.ssl.CERT_DIR }}
+              name: cert-file
+          {{- end }}
+      volumes:
+        {{- if .Values.global.db.sslEnabled }}
+          - name: ca-file
+            secret:
+              secretName: {{ $postgresSecretName }}
+              items:
+                - key: caFile
+                  path: ca.pem
+          - name: key-file
+            secret:
+              secretName: {{ $postgresSecretName }}
+              items:
+                - key: keyFile
+                  path: key.pem
+          - name: cert-file
+            secret:
+              secretName: {{ $postgresSecretName }}
+              items:
+                - key: certFile
+                  path: cert.pem
+        {{- end }}
 {{- end -}}

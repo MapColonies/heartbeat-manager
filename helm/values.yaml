@@ -7,6 +7,7 @@ global:
     host: "localhost"
     port: 5432
     sslEnabled: false
+    rejectUnauthorized: false
     secrets:
       useExternal: false
       externalSecretName: ""
@@ -55,6 +56,13 @@ env:
     database: "raster"
     schema: "public"
     logging: false
+    ssl: # external paths
+      CA_DIR: /opt/certs/ca/
+      KEY_DIR: /opt/certs/key/
+      CERT_DIR: /opt/certs/cert/
+      CA_FILE_LOCATION: /opt/certs/ca/ca.pem
+      KEY_FILE_LOCATION: /opt/certs/key/key.pem
+      CERT_FILE_LOCATION: /opt/certs/cert/cert.pem
   
 resources:
   enabled: true

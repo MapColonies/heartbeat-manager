@@ -10,7 +10,7 @@ type: Opaque
 stringData:
   username: {{ quote .Values.postgresSecret.userName }}
   password: {{ quote .Values.postgresSecret.password }}
-  {{- if .Values.env.db.sslEnabled }}
+  {{- if .Values.global.db.sslEnabled }}
   caFile: {{ .Files.Get $caPath | quote }}
   keyFile: {{ .Files.Get $keyPath | quote }}
   certFile: {{ .Files.Get $certPath | quote }}

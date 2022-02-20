@@ -14,5 +14,6 @@ export interface OpenApiConfig {
 
 export interface IDbConfig extends PostgresConnectionOptions {
   enableSslAuth: boolean;
+  rejectUnauthorized: boolean;
   sslPaths: { ca: string; cert: string; key: string };
 }
