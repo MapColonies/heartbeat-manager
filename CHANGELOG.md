@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/MapColonies/heartbeat-manager/compare/v1.1.1...v1.1.2) (2022-02-21)
+
+
+### Bug Fixes
+
+* ssl support ([#14](https://github.com/MapColonies/heartbeat-manager/issues/14)) ([2600c06](https://github.com/MapColonies/heartbeat-manager/commit/2600c066cd488038c781ca509607c58e891f7beb))
+
 ### [1.1.1](https://github.com/MapColonies/heartbeat-manager/compare/v1.1.0...v1.1.1) (2022-02-16)
 
 
