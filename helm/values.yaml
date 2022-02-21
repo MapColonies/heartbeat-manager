@@ -23,7 +23,7 @@ cloudProvider:
   imagePullSecretName: "my-registry-secret"
 
 image:
-  repository: "heartbeat-manager-registry"
+  repository: "heartbeat-manager"
   tag: "latest"
 
 local:
@@ -45,7 +45,7 @@ env:
   openApiFilPath: "./openapi3.yaml"
   requestPayloadLimit: "1mb"
   responseCompressionEnabled: true
-  logLevel: "info"
+  logLevel: "warn"
   tracing:
     enabled: false
     url: "http://localhost:55681/v1/trace"
