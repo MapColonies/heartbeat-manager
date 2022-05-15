@@ -7,27 +7,22 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-{{ $chartName }}-configmap
 data:
-  OPENAPI_FILE_PATH: {{ .Values.env.openApiFilPath | quote }}
   LOG_LEVEL: {{ .Values.env.logLevel | quote }}
-  SERVER_PORT: {{ .Values.env.port | quote }}
   REQUEST_PAYLOAD_LIMIT: {{ .Values.env.requestPayloadLimit | quote }}
   RESPONSE_COMPRESSION_ENABLED: {{ .Values.env.responseCompressionEnabled | quote }}
-  DB_HOST: {{ .Values.global.db.host | quote }}
-  DB_PORT: {{ .Values.global.db.port | quote }}
-  DB_NAME: {{ .Values.env.db.database | quote }}
+  DB_HOST: {{ .Values.rasterCommon.db.host | quote }}
+  DB_PORT: {{ .Values.rasterCommon.db.port | quote }}
+  DB_NAME: {{ .Values.env.db.nameOverride | default .Values.rasterCommon.db.name | quote }}
   DB_SCHEMA: {{ .Values.env.db.schema | quote }}
   DB_LOGGING: {{ .Values.env.db.logging | quote }}
-  DB_SSL_ENABLE: {{ .Values.global.db.sslEnabled | quote }}
-  DB_SSL_CA: {{ .Values.env.db.ssl.CA_FILE_LOCATION | quote }}
-  DB_SSL_KEY: {{ .Values.env.db.ssl.KEY_FILE_LOCATION | quote }}
-  DB_SSL_CERT: {{ .Values.env.db.ssl.CERT_FILE_LOCATION | quote }}
-  DB_SSL_REJECT_UNAUTHORIZED: {{ .Values.global.db.rejectUnauthorized | quote }}
+  DB_SSL_ENABLE: {{ .Values.rasterCommon.db.sslEnabled | quote }}
+  DB_SSL_REJECT_UNAUTHORIZED: {{ .Values.env.db.rejectUnauthorized | quote }}
   {{ if .Values.env.tracing.enabled }}
   TELEMETRY_TRACING_ENABLED: 'true'
   TELEMETRY_TRACING_URL: {{ $tracingUrl }}
-  {{ end }} 
+  {{ end }}
   {{ if .Values.env.metrics.enabled }}
   TELEMETRY_METRICS_ENABLED: 'true'
   TELEMETRY_METRICS_URL: {{ $metricsUrl }}
-  {{ end }}  
+  {{ end }}
 {{- end }}

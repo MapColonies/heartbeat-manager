@@ -3,7 +3,8 @@
 {{- $cloudProviderFlavor := include "heartbeat-manager.cloudProviderFlavor" . -}}
 {{- $cloudProviderDockerRegistryUrl := include "heartbeat-manager.cloudProviderDockerRegistryUrl" . -}}
 {{- $cloudProviderImagePullSecretName := include "heartbeat-manager.cloudProviderImagePullSecretName" . -}}
-{{ $postgresSecretName := ternary .Values.global.db.secrets.externalSecretName (printf "%s%s" .Release.Name "-postgres-secret") .Values.global.db.secrets.useExternal }}
+{{- $imageTag := include "heartbeat-manager.tag" . -}}
+{{ $postgresSecretName := ternary .Values.rasterCommon.db.secrets.externalSecretName (printf "%s%s" .Release.Name "-postgres-secret") .Values.rasterCommon.db.secrets.useExternal }}
 {{- if .Values.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -42,7 +43,7 @@ spec:
       containers:
         - name: {{ $releaseName }}-{{ $chartName }}-deployment
           {{- with .Values.image }}
-          image: {{ $cloudProviderDockerRegistryUrl }}{{ .repository }}:{{ .tag }}
+          image: {{ $cloudProviderDockerRegistryUrl }}{{ .repository }}:{{ $imageTag }}
           {{- end }}
           env:
             - name: SERVER_PORT
@@ -57,6 +58,14 @@ spec:
                 secretKeyRef:
                   name: {{ $postgresSecretName }}
                   key: password
+            {{- if .Values.rasterCommon.db.sslEnabled }}
+            - name: DB_SSL_CA
+              value: "/opt/certs/ca/ca.pem"
+            - name: DB_SSL_KEY
+              value: "/opt/certs/key/key.pem"
+            - name: DB_SSL_CERT
+              value: "/opt/certs/cert/cert.pem"
+            {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ $releaseName }}-{{ $chartName }}-configmap
@@ -74,33 +83,36 @@ spec:
             {{- toYaml .Values.resources.value | nindent 12 }}
           {{- end }}
           volumeMounts:
-          {{- if .Values.global.db.sslEnabled }}
-            - mountPath: {{ .Values.env.db.ssl.CA_DIR }}
-              name: ca-file
-            - mountPath: {{ .Values.env.db.ssl.KEY_DIR }}
-              name: key-file
-            - mountPath: {{ .Values.env.db.ssl.CERT_DIR }}
-              name: cert-file
+          {{- if .Values.rasterCommon.db.sslEnabled }}
+            - name: ca-file
+              mountPath: "/opt/certs/ca/ca.pem"
+              subPath: ca.pem
+            - name: key-file
+              mountPath: "/opt/certs/key/key.pem"
+              subPath: key.pem
+            - name: cert-file
+              mountPath: "/opt/certs/cert/cert.pem"
+              subPath: cert.pem
           {{- end }}
       volumes:
-        {{- if .Values.global.db.sslEnabled }}
-          - name: ca-file
-            secret:
-              secretName: {{ $postgresSecretName }}
-              items:
-                - key: caFile
-                  path: ca.pem
-          - name: key-file
-            secret:
-              secretName: {{ $postgresSecretName }}
-              items:
-                - key: keyFile
-                  path: key.pem
-          - name: cert-file
-            secret:
-              secretName: {{ $postgresSecretName }}
-              items:
-                - key: certFile
-                  path: cert.pem
+        {{- if .Values.rasterCommon.db.sslEnabled }}
+        - name: ca-file
+          secret:
+            secretName: {{ $postgresSecretName }}
+            items:
+              - key: caFile
+                path: ca.pem
+        - name: key-file
+          secret:
+            secretName: {{ $postgresSecretName }}
+            items:
+              - key: keyFile
+                path: key.pem
+        - name: cert-file
+          secret:
+            secretName: {{ $postgresSecretName }}
+            items:
+              - key: certFile
+                path: cert.pem
         {{- end }}
 {{- end -}}
