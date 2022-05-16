@@ -3,14 +3,7 @@ global:
   tracing: {}
   metrics: {}
   environment: {}
-  db:
-    host: "localhost"
-    port: 5432
-    sslEnabled: false
-    rejectUnauthorized: false
-    secrets:
-      useExternal: false
-      externalSecretName: ""
+
 enabled: true
 environment: "development"
 replicaCount: 1
@@ -28,16 +21,24 @@ image:
   tag: "latest"
 
 local:
-  certs:
-    postgres:
-      ca: "certs/postgres/rootCA.crt"
-      key: "certs/postgres/avi.key"
-      cert: "certs/postgres/avi.crt"
+  db:
+    createSecret: false
+    userName: postgres
+    password: postgres
+    certs:
+      ca: certs/ca.pem
+      key: certs/key.pem
+      cert: certs/cert.pem
 
-postgresSecret:
-  enabled: true
-  userName: "postgres"
-  password: "postgres"
+rasterCommon:
+  db:
+    host: "localhost"
+    name: "raster"
+    port: 5432
+    sslEnabled: false
+    secrets:
+      useExternal: false
+      externalSecretName: ''
 
 env:
   port: 80
@@ -52,18 +53,12 @@ env:
     url: "http://localhost:55681/v1/trace"
   metrics:
     enabled: false
-    url: "http://localhost:55681/v1/metrics"      
+    url: "http://localhost:55681/v1/metrics"
   db:
-    database: "raster"
+    nameOverride: ""
     schema: "public"
     logging: false
-    ssl: # external paths
-      CA_DIR: /opt/certs/ca/
-      KEY_DIR: /opt/certs/key/
-      CERT_DIR: /opt/certs/cert/
-      CA_FILE_LOCATION: /opt/certs/ca/ca.pem
-      KEY_FILE_LOCATION: /opt/certs/key/key.pem
-      CERT_FILE_LOCATION: /opt/certs/cert/cert.pem
+    rejectUnauthorized: true 
   
 resources:
   enabled: true
@@ -78,6 +73,10 @@ resources:
 route:
   enabled: false
   path: /
+  timeout:
+    enabled: false # defaults to 30s by openshift
+    duration: 60s # supported units (us, ms, s, m, h, d)
+
 
 ingress:
   enabled: false
