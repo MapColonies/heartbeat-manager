@@ -4,7 +4,7 @@
 {{- $cloudProviderDockerRegistryUrl := include "heartbeat-manager.cloudProviderDockerRegistryUrl" . -}}
 {{- $cloudProviderImagePullSecretName := include "heartbeat-manager.cloudProviderImagePullSecretName" . -}}
 {{- $imageTag := include "heartbeat-manager.tag" . -}}
-{{ $postgresSecretName := ternary .Values.rasterCommon.db.secrets.externalSecretName (printf "%s%s" .Release.Name "-postgres-secret") .Values.rasterCommon.db.secrets.useExternal }}
+{{ $postgresSecretName := ternary .Values.sharedData.db.secrets.externalSecretName (printf "%s%s" .Release.Name "-postgres-secret") .Values.sharedData.db.secrets.useExternal }}
 {{- if .Values.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
@@ -58,7 +58,7 @@ spec:
                 secretKeyRef:
                   name: {{ $postgresSecretName }}
                   key: password
-            {{- if .Values.rasterCommon.db.sslEnabled }}
+            {{- if .Values.sharedData.db.sslEnabled }}
             - name: DB_SSL_CA
               value: "/opt/certs/ca/ca.pem"
             - name: DB_SSL_KEY
@@ -83,7 +83,7 @@ spec:
             {{- toYaml .Values.resources.value | nindent 12 }}
           {{- end }}
           volumeMounts:
-          {{- if .Values.rasterCommon.db.sslEnabled }}
+          {{- if .Values.sharedData.db.sslEnabled }}
             - name: ca-file
               mountPath: "/opt/certs/ca/ca.pem"
               subPath: ca.pem
@@ -95,7 +95,7 @@ spec:
               subPath: cert.pem
           {{- end }}
       volumes:
-        {{- if .Values.rasterCommon.db.sslEnabled }}
+        {{- if .Values.sharedData.db.sslEnabled }}
         - name: ca-file
           secret:
             secretName: {{ $postgresSecretName }}
