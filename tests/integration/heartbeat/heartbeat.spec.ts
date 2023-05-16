@@ -14,7 +14,7 @@ const nowDate = new Date(now);
 
 describe('heartbeat', function () {
   beforeAll(() => {
-    jest.useFakeTimers('modern');
+    jest.useFakeTimers();
     jest.setSystemTime(nowDate);
   });
 
@@ -54,10 +54,10 @@ describe('heartbeat', function () {
 
     it('pulse should return 200 status code and save the heartbeat pulse', async function () {
       const id = '1';
-      const entity = ({
+      const entity = {
         id: id,
         lastHeartbeat: nowDate,
-      } as unknown) as HeartbeatEntity;
+      } as unknown as HeartbeatEntity;
 
       const response = await requestSender.pulse(id);
 
