@@ -24,10 +24,10 @@
   },
   "typeOrm": {
     "type": "postgres",
-    "host": "",
+    "host": "10.0.4.4",
     "port": 5432,
-    "username": "",
-    "password": "",
+    "username": "postgres",
+    "password": "Libot4allnonprod",
     "enableSslAuth": false,
     "rejectUnauthorized": false,
     "sslPaths": {
@@ -35,8 +35,8 @@
       "key": "",
       "cert": ""
     },
-    "database": "common",
-    "schema": "public",
+    "database": "raster-dev",
+    "schema": "HeartbeatManager",
     "synchronize": false,
     "logging": false,
     "entities": ["**/DAL/entity/**/*.js"],

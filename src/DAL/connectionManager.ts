@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { createConnection, Connection, ObjectType, ConnectionOptions } from 'typeorm';
 import { inject, singleton } from 'tsyringe';
 import { Logger } from '@map-colonies/js-logger';
-import { Services } from '../common/constants';
+import { SERVICES } from '../common/constants';
 import { IConfig, IDbConfig } from '../common/interfaces';
 import { DBConnectionError } from '../common/errors';
 import { HeartbeatRepository } from './repositories/heartbeatRepository';
@@ -12,7 +12,7 @@ export class ConnectionManager {
   private connection?: Connection;
   private connectionStatusPromise?: Promise<Connection>;
 
-  public constructor(@inject(Services.LOGGER) private readonly logger: Logger, @inject(Services.CONFIG) private readonly config: IConfig) {}
+  public constructor(@inject(SERVICES.LOGGER) private readonly logger: Logger, @inject(SERVICES.CONFIG) private readonly config: IConfig) {}
 
   public async init(): Promise<void> {
     const connectionConfig = this.config.get<IDbConfig>('typeOrm');

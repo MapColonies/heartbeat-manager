@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import { EntityRepository, LessThan, Repository } from 'typeorm';
 import { Logger } from '@map-colonies/js-logger';
-import { Services } from '../../common/constants';
+import { SERVICES } from '../../common/constants';
 import { HeartbeatEntity } from '../entity/heartbeat';
 
 @EntityRepository(HeartbeatEntity)
@@ -11,7 +11,7 @@ export class HeartbeatRepository extends Repository<HeartbeatEntity> {
   public constructor() {
     super();
     //direct injection don't work here due to being initialized by typeOrm
-    this.appLogger = container.resolve(Services.LOGGER);
+    this.appLogger = container.resolve(SERVICES.LOGGER);
   }
 
   public async pulse(id: string): Promise<void> {

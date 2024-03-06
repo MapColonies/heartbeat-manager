@@ -7,7 +7,7 @@ import { middleware as OpenApiMiddleware } from 'express-openapi-validator';
 import { container, inject, injectable } from 'tsyringe';
 import { Logger } from '@map-colonies/js-logger';
 import httpLogger from '@map-colonies/express-access-log-middleware';
-import { Services } from './common/constants';
+import { SERVICES } from './common/constants';
 import { IConfig } from './common/interfaces';
 import { heartbeatRouterFactory } from './heartbeat/routes/heartbeatRouter';
 import { getErrorLoggerMiddleware } from './common/errorLogger';
@@ -16,7 +16,7 @@ import { getErrorLoggerMiddleware } from './common/errorLogger';
 export class ServerBuilder {
   private readonly serverInstance: express.Application;
 
-  public constructor(@inject(Services.CONFIG) private readonly config: IConfig, @inject(Services.LOGGER) private readonly logger: Logger) {
+  public constructor(@inject(SERVICES.CONFIG) private readonly config: IConfig, @inject(SERVICES.LOGGER) private readonly logger: Logger) {
     this.serverInstance = express();
   }
 
