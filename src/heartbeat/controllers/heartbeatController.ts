@@ -3,7 +3,7 @@ import { BoundCounter } from '@opentelemetry/api-metrics';
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status-codes';
 import { injectable, inject } from 'tsyringe';
-import { Services } from '../../common/constants';
+import { SERVICES } from '../../common/constants';
 import { HeartbeatManager, IGetExpiredHeartbeatsRequest, IPulseRequest, RemoveHeartbeatsRequest } from '../models/heartbeatManager';
 
 type PulseHandler = RequestHandler<IPulseRequest>;
@@ -15,7 +15,7 @@ export class HeartbeatController {
   private readonly createdResourceCounter: BoundCounter;
 
   public constructor(
-    @inject(Services.LOGGER) private readonly logger: Logger,
+    @inject(SERVICES.LOGGER) private readonly logger: Logger,
     @inject(HeartbeatManager) private readonly manager: HeartbeatManager
   ) {}
 

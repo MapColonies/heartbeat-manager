@@ -1,6 +1,6 @@
 import { Logger } from '@map-colonies/js-logger';
 import { inject, injectable } from 'tsyringe';
-import { Services } from '../../common/constants';
+import { SERVICES } from '../../common/constants';
 import { ConnectionManager } from '../../DAL/connectionManager';
 import { HeartbeatRepository } from '../../DAL/repositories/heartbeatRepository';
 
@@ -18,7 +18,7 @@ export type RemoveHeartbeatsRequest = string[];
 export class HeartbeatManager {
   private repository?: HeartbeatRepository;
 
-  public constructor(@inject(Services.LOGGER) private readonly logger: Logger, private readonly connectionManager: ConnectionManager) {}
+  public constructor(@inject(SERVICES.LOGGER) private readonly logger: Logger, private readonly connectionManager: ConnectionManager) {}
 
   public async pulse(req: IPulseRequest): Promise<void> {
     this.logger.debug(`received heartbeat pulse for ${req.id}`);
