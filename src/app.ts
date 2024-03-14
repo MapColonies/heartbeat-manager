@@ -1,11 +1,9 @@
-import { container } from 'tsyringe';
 import { Application } from 'express';
-import { Tracing } from '@map-colonies/telemetry';
-import { registerExternalValues } from './containerConfig';
+import { registerExternalValues, RegisterOptions } from './containerConfig';
 import { ServerBuilder } from './serverBuilder';
 
-function getApp(tracing: Tracing): Application {
-  registerExternalValues(tracing);
+function getApp(registerOptions?: RegisterOptions): Application {
+  const container = registerExternalValues(registerOptions);
   const app = container.resolve(ServerBuilder).build();
   return app;
 }

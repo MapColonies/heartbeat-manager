@@ -1,29 +1,38 @@
 import httpStatusCodes from 'http-status-codes';
 import { container } from 'tsyringe';
+import jsLogger from '@map-colonies/js-logger';
+import { trace } from '@opentelemetry/api';
 import { HeartbeatEntity } from '../../../src/DAL/entity/heartbeat';
 import { HeartbeatRepository } from '../../../src/DAL/repositories/heartbeatRepository';
 import { RepositoryMocks, initTypeOrmMocks, registerRepository, lessThanMock } from '../../mocks/DBMock';
-import { registerTestValues } from '../testContainerConfig';
-import * as requestSender from './helpers/requestSender';
+import { getApp } from '../../../src/app';
+import { SERVICES } from '../../../src/common/constants';
+import { HeartbeatRequestSender } from './helpers/requestSender';
 
 let heartbeatRepositoryMocks: RepositoryMocks;
-let repositoryMock: HeartbeatRepository;
 
 const now = 1620894317;
 const nowDate = new Date(now);
 
 describe('heartbeat', function () {
+  let requestSender: HeartbeatRequestSender;
   beforeAll(() => {
     jest.useFakeTimers();
     jest.setSystemTime(nowDate);
   });
 
   beforeEach(function () {
-    registerTestValues();
-    requestSender.init();
+    //registerTestValues();
     initTypeOrmMocks();
-    repositoryMock = new HeartbeatRepository();
-    heartbeatRepositoryMocks = registerRepository(HeartbeatRepository, repositoryMock);
+    const app = getApp({
+      override: [
+        { token: SERVICES.LOGGER, provider: { useValue: jsLogger({ enabled: false }) } },
+        { token: SERVICES.TRACER, provider: { useValue: trace.getTracer('testTracer') } },
+      ],
+      useChild: false, //child container is incompatible with the typeorm repositories implementation
+    });
+    heartbeatRepositoryMocks = registerRepository(HeartbeatRepository, new HeartbeatRepository());
+    requestSender = new HeartbeatRequestSender(app);
   });
 
   afterEach(function () {

@@ -1,24 +1,17 @@
 import * as supertest from 'supertest';
-import { Application } from 'express';
 
-import { container } from 'tsyringe';
-import { ServerBuilder } from '../../../../src/serverBuilder';
+export class HeartbeatRequestSender {
+  public constructor(private readonly app: Express.Application) {}
 
-let app: Application | null = null;
+  public async getExpiredHeartbeats(duration: number): Promise<supertest.Response> {
+    return supertest.agent(this.app).get(`/heartbeat/expired/${duration}`).set('Content-Type', 'application/json');
+  }
 
-export function init(): void {
-  const builder = container.resolve<ServerBuilder>(ServerBuilder);
-  app = builder.build();
-}
+  public async pulse(id: string): Promise<supertest.Response> {
+    return supertest.agent(this.app).post(`/heartbeat/${id}`).set('Content-Type', 'application/json');
+  }
 
-export async function getExpiredHeartbeats(duration: number): Promise<supertest.Response> {
-  return supertest.agent(app).get(`/heartbeat/expired/${duration}`).set('Content-Type', 'application/json');
-}
-
-export async function pulse(id: string): Promise<supertest.Response> {
-  return supertest.agent(app).post(`/heartbeat/${id}`).set('Content-Type', 'application/json');
-}
-
-export async function removeHeartbeats(ids: string[] | Record<string, unknown>): Promise<supertest.Response> {
-  return supertest.agent(app).post(`/heartbeat/remove`).set('Content-Type', 'application/json').send(ids);
+  public async removeHeartbeats(ids: string[] | Record<string, unknown>): Promise<supertest.Response> {
+    return supertest.agent(this.app).post(`/heartbeat/remove`).set('Content-Type', 'application/json').send(ids);
+  }
 }
