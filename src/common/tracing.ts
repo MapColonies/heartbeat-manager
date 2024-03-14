@@ -15,7 +15,6 @@ export const tracing = new Tracing(
     /* eslint-disable @typescript-eslint/naming-convention */
     '@opentelemetry/instrumentation-pg': { requireParentSpan: true },
     '@opentelemetry/instrumentation-fs': { requireParentSpan: true },
-    '@opentelemetry/instrumentation-express': {  }
     /* eslint-disable @typescript-eslint/naming-convention */
   }
 );
