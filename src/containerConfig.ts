@@ -1,27 +1,41 @@
-import { container } from 'tsyringe';
 import config from 'config';
 import { getOtelMixin } from '@map-colonies/telemetry';
-import jsLogger, { LoggerOptions } from '@map-colonies/js-logger';
-import { Tracing } from '@map-colonies/telemetry';
 import { trace } from '@opentelemetry/api';
-import { SERVICE_NAME, SERVICES } from './common/constants';
+import { DependencyContainer } from 'tsyringe/dist/typings/types';
+import jsLogger, { LoggerOptions } from '@map-colonies/js-logger';
+import { SERVICES, SERVICE_NAME } from './common/constants';
+import { tracing } from './common/tracing';
+import { InjectionObject, registerDependencies } from './common/dependencyRegistration';
+import { heartbeatRouterFactory, RECORD_ROUTER_SYMBOL } from './heartbeat/routes/heartbeatRouter';
 
-function registerExternalValues(tracing: Tracing): void {
-  const loggerConfig = config.get<LoggerOptions>('logger');
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-  const logger = jsLogger({ ...loggerConfig, prettyPrint: false, mixin: getOtelMixin() });
-  container.register(SERVICES.CONFIG, { useValue: config });
-  container.register(SERVICES.LOGGER, { useValue: logger });
+export interface RegisterOptions {
+  override?: InjectionObject<unknown>[];
+  useChild?: boolean;
+}
+
+export const registerExternalValues = (options?: RegisterOptions): DependencyContainer => {
+  const loggerConfig = config.get<LoggerOptions>('telemetry.logger');
+  const logger = jsLogger({ ...loggerConfig, prettyPrint: loggerConfig.prettyPrint, mixin: getOtelMixin() });
 
   tracing.start();
   const tracer = trace.getTracer(SERVICE_NAME);
 
-  container.register(SERVICES.TRACER, { useValue: tracer });
-  container.register('onSignal', {
-    useValue: async (): Promise<void> => {
-      await Promise.all([tracing.stop()]);
+  const dependencies: InjectionObject<unknown>[] = [
+    { token: SERVICES.CONFIG, provider: { useValue: config } },
+    { token: SERVICES.LOGGER, provider: { useValue: logger } },
+    { token: SERVICES.TRACER, provider: { useValue: tracer } },
+    { token: RECORD_ROUTER_SYMBOL, provider: { useFactory: heartbeatRouterFactory } },
+    {
+      token: 'onSignal',
+      provider: {
+        useValue: {
+          useValue: async (): Promise<void> => {
+            await Promise.all([tracing.stop()]);
+          },
+        },
+      },
     },
-  });
-}
+  ];
 
-export { registerExternalValues };
+  return registerDependencies(dependencies, options?.override, options?.useChild);
+};

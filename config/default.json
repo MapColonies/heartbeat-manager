@@ -5,8 +5,15 @@
     "rawPath": "/api",
     "uiPath": "/api"
   },
-  "logger": {
-    "level": "info"
+  "telemetry": {
+    "logger": {
+      "level": "info",
+      "prettyPrint": false
+    },
+    "tracing": {
+      "enabled": "true",
+      "url": "http://localhost:4318/v1/traces"
+    }
   },
   "server": {
     "port": "8080",
