@@ -22,7 +22,6 @@ describe('heartbeat', function () {
   });
 
   beforeEach(function () {
-    //registerTestValues();
     initTypeOrmMocks();
     const app = getApp({
       override: [
