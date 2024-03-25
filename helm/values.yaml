@@ -3,6 +3,19 @@ global:
   tracing: {}
   metrics: {}
   environment: {}
+  ingress:
+    domain: 'apps.aroapp.io'  
+  db:
+    host: "localhost"
+    name: "common"
+    port: 5432
+    schema: "HeartbeatManager"
+    logging: false
+    sslEnabled: false
+    secrets:
+      useExternal: false
+      externalSecretName: ''
+
 
 enabled: true
 environment: "development"
@@ -30,16 +43,17 @@ local:
       key: certs/key.pem
       cert: certs/cert.pem
 
-sharedData:
-  db:
-    host: "localhost"
-    name: "common"
-    port: 5432
-    sslEnabled: false
-    secrets:
-      useExternal: false
-      externalSecretName: ''
-
+db:
+  host: "localhost"
+  name: "common"
+  port: 5432
+  schema: "HeartbeatManager"
+  sslEnabled: false
+  logging: false
+  rejectUnauthorized: true
+  secrets:
+    useExternal: false
+    externalSecretName: '' 
 env:
   port: 80
   targetPort: 8080
@@ -54,11 +68,6 @@ env:
   metrics:
     enabled: false
     url: "http://localhost:55681/v1/metrics"
-  db:
-    nameOverride: ""
-    schema: "public"
-    logging: false
-    rejectUnauthorized: true 
   
 resources:
   enabled: true
@@ -83,6 +92,7 @@ ingress:
   type: 'nginx-org' # supported values: 'nginx-org' | 'nginx-kubernetes'
   path: /
   host: "localhost"
+  domain: ""
   cors:
     enabled: true
     origin: '*'

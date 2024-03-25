@@ -1,0 +1,121 @@
+---
+# Source: heartbeat-manager/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-configmap
+data:
+  LOG_LEVEL: "warn"
+  REQUEST_PAYLOAD_LIMIT: "1mb"
+  RESPONSE_COMPRESSION_ENABLED: "true"
+  DB_HOST: "localhost"
+  DB_PORT: "5432"
+  DB_NAME: "common"
+  DB_SCHEMA: "HeartbeatManager"
+  DB_LOGGING: "false"
+  DB_SSL_ENABLE: "false"
+  DB_SSL_REJECT_UNAUTHORIZED: "true"
+  PGAPPNAME: heartbeat-manager
+---
+# Source: heartbeat-manager/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-service
+  labels:
+    app: heartbeat-manager
+    component: heartbeat-manager
+    environment: development
+    release: test
+    helm.sh/chart: heartbeat-manager-1.0.0
+    app.kubernetes.io/name: heartbeat-manager
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: heartbeat-manager
+    release: test
+    run: test-heartbeat-manager
+    app.kubernetes.io/name: heartbeat-manager
+    app.kubernetes.io/instance: test
+---
+# Source: heartbeat-manager/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-deployment
+  labels:
+    app: heartbeat-manager
+    component: heartbeat-manager
+    environment: development
+    release: test
+    helm.sh/chart: heartbeat-manager-1.0.0
+    app.kubernetes.io/name: heartbeat-manager
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: heartbeat-manager
+      release: test
+      run: test-heartbeat-manager
+      app.kubernetes.io/name: heartbeat-manager
+      app.kubernetes.io/instance: test
+  template:
+    metadata:
+      labels:
+        app: heartbeat-manager
+        release: test
+        run: test-heartbeat-manager
+        app.kubernetes.io/name: heartbeat-manager
+        app.kubernetes.io/instance: test
+      annotations:
+        checksum/configmap: 7fbd49ff71f0fab99859360fa70a128b9954de8209ccb80c0cae12bf402fd474
+    spec:
+      imagePullSecrets:
+        - name: "my-registry-secret"
+      containers:
+        - name: test
+          image: my-registry-url.io/heartbeat-manager:latest
+          env:
+            - name: SERVER_PORT
+              value: "8080"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: test-postgres-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: test-postgres-secret
+                  key: password
+          envFrom:
+            - configMapRef:
+                name: test-configmap
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 60
+            httpGet:
+              path: /liveness
+              port: 8080
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          volumeMounts:
+      volumes:
