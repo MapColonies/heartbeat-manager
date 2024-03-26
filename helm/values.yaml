@@ -44,16 +44,14 @@ local:
       cert: certs/cert.pem
 
 db:
-  host: "localhost"
-  name: "common"
+  host: ""
+  name: ""
   port: 5432
-  schema: "HeartbeatManager"
+  schema: ""
   sslEnabled: false
   logging: false
   rejectUnauthorized: true
-  secrets:
-    useExternal: false
-    externalSecretName: '' 
+
 env:
   port: 80
   targetPort: 8080
