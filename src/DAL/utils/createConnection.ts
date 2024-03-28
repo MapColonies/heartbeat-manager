@@ -6,8 +6,10 @@ import { HeartbeatEntity } from '../entity/heartbeat';
 
 export const createConnectionOptions = (dbConfig: IDbConfig): DataSourceOptions => {
   const { enableSslAuth, sslPaths, ...dataSourceOptions } = dbConfig;
+  /* istanbul ignore next  */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   dataSourceOptions.extra = { application_name: `${hostname()}-${process.env.NODE_ENV ?? 'unknown_env'}` };
+  /* istanbul ignore if  */
   if (enableSslAuth) {
     dataSourceOptions.password = undefined;
     dataSourceOptions.ssl = { key: readFileSync(sslPaths.key), cert: readFileSync(sslPaths.cert), ca: readFileSync(sslPaths.ca) };

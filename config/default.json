@@ -45,14 +45,6 @@
     "database": "common",
     "schema": "public",
     "synchronize": false,
-    "logging": false,
-    "entities": ["**/DAL/entity/**/*.js"],
-    "migrations": [],
-    "subscribers": ["**/DAL/subscriber/**/*.js"],
-    "cli": {
-      "entitiesDir": "src/DAL/entity",
-      "migrationsDir": "src/DAL/migration",
-      "subscribersDir": "src/DAL/subscriber"
-    }
+    "logging": false
   }
 }

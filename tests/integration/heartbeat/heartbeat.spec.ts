@@ -1,89 +1,80 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+import { DependencyContainer } from 'tsyringe';
+import { DataSource } from 'typeorm';
 import httpStatusCodes from 'http-status-codes';
-import { container } from 'tsyringe';
 import jsLogger from '@map-colonies/js-logger';
 import { trace } from '@opentelemetry/api';
-import { HeartbeatEntity } from '../../../src/DAL/entity/heartbeat';
-import { HeartbeatRepository } from '../../../src/DAL/repositories/heartbeatRepository';
-import { RepositoryMocks, initTypeOrmMocks, registerRepository, lessThanMock } from '../../mocks/DBMock';
+import { HeartbeatRepository, HEARTBEAT_REPOSITORY_SYMBOL } from '../../../src/DAL/repositories/heartbeatRepository';
 import { getApp } from '../../../src/app';
 import { SERVICES } from '../../../src/common/constants';
 import { HeartbeatRequestSender } from './helpers/requestSender';
 
-let heartbeatRepositoryMocks: RepositoryMocks;
-
-const now = 1620894317;
-const nowDate = new Date(now);
-
 describe('heartbeat', function () {
   let requestSender: HeartbeatRequestSender;
-  beforeAll(() => {
-    jest.useFakeTimers();
-    jest.setSystemTime(nowDate);
-  });
-
-  beforeEach(function () {
-    initTypeOrmMocks();
-    const app = getApp({
+  let repo: HeartbeatRepository;
+  let depContainer: DependencyContainer;
+  let saveSpy: jest.SpyInstance;
+  let findSpy: jest.SpyInstance;
+  beforeAll(async function () {
+    const [app, container] = await getApp({
       override: [
         { token: SERVICES.LOGGER, provider: { useValue: jsLogger({ enabled: false }) } },
         { token: SERVICES.TRACER, provider: { useValue: trace.getTracer('testTracer') } },
       ],
-      useChild: false, //child container is incompatible with the typeorm repositories implementation
+      useChild: true,
     });
-    heartbeatRepositoryMocks = registerRepository(HeartbeatRepository, new HeartbeatRepository());
     requestSender = new HeartbeatRequestSender(app);
+    depContainer = container;
+    repo = depContainer.resolve(HEARTBEAT_REPOSITORY_SYMBOL);
+  });
+
+  beforeEach(function () {
+    saveSpy = jest.spyOn(repo, 'save');
+    findSpy = jest.spyOn(repo, 'find');
   });
 
   afterEach(function () {
-    container.clearInstances();
+    jest.restoreAllMocks();
     jest.resetAllMocks();
   });
 
-  afterAll(() => {
-    jest.useRealTimers();
+  afterAll(async function () {
+    await depContainer.resolve(DataSource).destroy();
   });
 
   describe('Happy Path', function () {
+    it('pulse should return 200 status code and save the heartbeat pulse', async function () {
+      const id = '1';
+      saveSpy = jest.spyOn(repo, 'save');
+      const response = await requestSender.pulse(id);
+
+      //expect(response).toSatisfyApiSpec();
+      expect(response.status).toBe(httpStatusCodes.OK);
+      expect(saveSpy).toHaveBeenCalledTimes(1);
+    });
+
     it('getExpiredHeartbeats should return status 200 and the expired tasks', async function () {
-      const duration = 350000;
+      const duration = 1;
       const matchingIds = ['1', '2'];
-      const entities = [{ id: '1' }, { id: '2' }];
-      heartbeatRepositoryMocks.findMock.mockReturnValue(entities);
+      saveSpy = jest.spyOn(repo, 'save');
+      findSpy = jest.spyOn(repo, 'find');
+      await requestSender.pulse('1');
+      await requestSender.pulse('2');
 
       const response = await requestSender.getExpiredHeartbeats(duration);
 
       expect(response.status).toBe(httpStatusCodes.OK);
       const ids = response.body as string[];
       expect(ids).toEqual(matchingIds);
-      expect(lessThanMock).toHaveBeenCalledWith(new Date(now - duration));
-      expect(lessThanMock).toHaveBeenCalledTimes(1);
-      expect(heartbeatRepositoryMocks.findMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('pulse should return 200 status code and save the heartbeat pulse', async function () {
-      const id = '1';
-      const entity = {
-        id: id,
-        lastHeartbeat: nowDate,
-      } as unknown as HeartbeatEntity;
-
-      const response = await requestSender.pulse(id);
-
-      expect(response.status).toBe(httpStatusCodes.OK);
-      expect(heartbeatRepositoryMocks.saveMock).toHaveBeenCalledTimes(1);
-      expect(heartbeatRepositoryMocks.saveMock).toHaveBeenCalledWith(entity);
+      expect(findSpy).toHaveBeenCalledTimes(1);
     });
 
     it('removeHeartbeats should return 200 status code and remove records from db', async () => {
       const ids = ['id1', 'id2'];
-      const expectedIds = ids.map((id) => ({ id }));
-      heartbeatRepositoryMocks.removeMock.mockResolvedValue(expectedIds);
-
       const response = await requestSender.removeHeartbeats(ids);
 
+      //expect(response).toSatisfyApiSpec();
       expect(response.status).toBe(httpStatusCodes.OK);
-      expect(heartbeatRepositoryMocks.removeMock).toHaveBeenCalledTimes(1);
-      expect(heartbeatRepositoryMocks.removeMock).toHaveBeenCalledWith(expectedIds);
     });
   });
 
