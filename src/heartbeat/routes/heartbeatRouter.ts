@@ -13,4 +13,6 @@ const heartbeatRouterFactory: FactoryFunction<Router> = (dependencyContainer) =>
   return router;
 };
 
+export const HEARTBEAT_ROUTER_SYMBOL = Symbol('HeartbeatRouterFactory');
+
 export { heartbeatRouterFactory };

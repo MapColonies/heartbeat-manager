@@ -114,7 +114,7 @@ Returns the tracing url from global if exists or from the chart's values
 {{- define "heartbeat-manager.tracingUrl" -}}
 {{- if .Values.global.tracing.url }}
     {{- .Values.global.tracing.url -}}
-{{- else if .Values.cloudProvider -}}
+{{- else if .Values.env.tracing.url -}}
     {{- .Values.env.tracing.url -}}
 {{- end -}}
 {{- end -}}
@@ -125,7 +125,7 @@ Returns the tracing url from global if exists or from the chart's values
 {{- define "heartbeat-manager.metricsUrl" -}}
 {{- if .Values.global.metrics.url }}
     {{- .Values.global.metrics.url -}}
-{{- else -}}
+{{- else if .Values.env.metrics.url -}}
     {{- .Values.env.metrics.url -}}
 {{- end -}}
 {{- end -}}

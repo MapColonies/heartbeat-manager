@@ -1,19 +1,14 @@
 import { Entity, Column, PrimaryColumn, Index } from 'typeorm';
+import { IHeartbeatEntity } from '../models/heartbeat';
 
 @Entity('Heartbeat')
-export class HeartbeatEntity {
+export class HeartbeatEntity implements IHeartbeatEntity {
   @PrimaryColumn('varchar', { length: 60 })
   public id: string;
 
   @Index()
-  @Column()
+  @Column({
+    type: 'timestamp without time zone',
+  })
   public lastHeartbeat: Date;
-
-  public constructor();
-  public constructor(init: Partial<HeartbeatEntity>);
-  public constructor(...args: [] | [Partial<HeartbeatEntity>]) {
-    if (args.length === 1) {
-      Object.assign(this, args[0]);
-    }
-  }
 }
