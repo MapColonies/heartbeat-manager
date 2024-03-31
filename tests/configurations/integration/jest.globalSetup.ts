@@ -9,12 +9,12 @@ export default async (): Promise<void> => {
     migrationsTableName: 'custom_migration_table',
     migrations: ['src/DAL/migrations/*.ts'],
   });
-  const schema= `"${dataSourceOptions.schema}"`
+  const schema = `"${dataSourceOptions.schema}"` || undefined;
   // it is not allowed to use parameters for create commands in postgresql :(
   if (schema != undefined) {
     await connection.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);
   }
-  await connection.query(`CREATE SCHEMA IF NOT EXISTS  ${schema ?? 'public'}`);
+  await connection.query(`CREATE SCHEMA IF NOT EXISTS  ${schema}`);
   await connection.runMigrations({ transaction: 'all' });
   await connection.destroy();
 };
