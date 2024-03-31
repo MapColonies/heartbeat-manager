@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/MapColonies/heartbeat-manager/compare/v1.1.11...v1.2.0) (2024-03-31)
+
+
+### Features
+
+* Add tracing ( MAPCO-4088, MAPCO-4071) ([#28](https://github.com/MapColonies/heartbeat-manager/issues/28)) ([6762e77](https://github.com/MapColonies/heartbeat-manager/commit/6762e77f4de3f040b31b7ad969f59e1ce3fab829))
+
+
+### Bug Fixes
+
+* connection to db on init ([#27](https://github.com/MapColonies/heartbeat-manager/issues/27)) ([e9db85d](https://github.com/MapColonies/heartbeat-manager/commit/e9db85dcbe7b907ba53917e7742aaca0bd5887f6))
+
 ### [1.1.11](https://github.com/MapColonies/heartbeat-manager/compare/v1.1.10...v1.1.11) (2023-12-28)
 
 ### [1.1.10](https://github.com/MapColonies/heartbeat-manager/compare/v1.1.9...v1.1.10) (2023-09-20)
