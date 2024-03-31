@@ -1,22 +1,26 @@
-import express from 'express';
+import express, { Router } from 'express';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import { OpenapiViewerRouter, OpenapiRouterConfig } from '@map-colonies/openapi-express-viewer';
 import { getErrorHandlerMiddleware } from '@map-colonies/error-express-handler';
 import { middleware as OpenApiMiddleware } from 'express-openapi-validator';
-import { container, inject, injectable } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 import { Logger } from '@map-colonies/js-logger';
 import httpLogger from '@map-colonies/express-access-log-middleware';
+import { getTraceContexHeaderMiddleware } from '@map-colonies/telemetry';
 import { SERVICES } from './common/constants';
 import { IConfig } from './common/interfaces';
-import { heartbeatRouterFactory } from './heartbeat/routes/heartbeatRouter';
-import { getErrorLoggerMiddleware } from './common/errorLogger';
+import { RECORD_ROUTER_SYMBOL } from './heartbeat/routes/heartbeatRouter';
 
 @injectable()
 export class ServerBuilder {
   private readonly serverInstance: express.Application;
 
-  public constructor(@inject(SERVICES.CONFIG) private readonly config: IConfig, @inject(SERVICES.LOGGER) private readonly logger: Logger) {
+  public constructor(
+    @inject(SERVICES.CONFIG) private readonly config: IConfig,
+    @inject(SERVICES.LOGGER) private readonly logger: Logger,
+    @inject(RECORD_ROUTER_SYMBOL) private readonly heartbeatRouter: Router
+  ) {
     this.serverInstance = express();
   }
 
@@ -38,7 +42,7 @@ export class ServerBuilder {
   }
 
   private buildRoutes(): void {
-    this.serverInstance.use('/heartbeat', heartbeatRouterFactory(container));
+    this.serverInstance.use('/heartbeat', this.heartbeatRouter);
     this.buildDocsRoutes();
   }
 
@@ -50,6 +54,7 @@ export class ServerBuilder {
     }
 
     this.serverInstance.use(bodyParser.json(this.config.get<bodyParser.Options>('server.request.payload')));
+    this.serverInstance.use(getTraceContexHeaderMiddleware());
 
     const ignorePathRegex = new RegExp(`^${this.config.get<string>('openapiConfig.basePath')}/.*`, 'i');
     const apiSpecPath = this.config.get<string>('openapiConfig.filePath');
@@ -57,7 +62,6 @@ export class ServerBuilder {
   }
 
   private registerPostRoutesMiddleware(): void {
-    this.serverInstance.use(getErrorLoggerMiddleware());
     this.serverInstance.use(getErrorHandlerMiddleware());
   }
 }
