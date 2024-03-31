@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/MapColonies/heartbeat-manager/compare/v1.2.0...v1.3.0) (2024-03-31)
+
+
+### Features
+
+* changes for new common job-manager umbrella and new build and push (MAPCO-4080) ([#29](https://github.com/MapColonies/heartbeat-manager/issues/29)) ([4391437](https://github.com/MapColonies/heartbeat-manager/commit/43914379a3de063f4cc70e5a622ec38876277094))
+
 ## [1.2.0](https://github.com/MapColonies/heartbeat-manager/compare/v1.1.11...v1.2.0) (2024-03-31)
 
 
