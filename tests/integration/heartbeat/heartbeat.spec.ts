@@ -62,7 +62,8 @@ describe('heartbeat', function () {
       await requestSender.pulse('2');
 
       const response = await requestSender.getExpiredHeartbeats(duration);
-
+      //TODO: fix code to enable toSatisfyApiSpec to work
+      //expect(response).toSatisfyApiSpec();
       expect(response.status).toBe(httpStatusCodes.OK);
       const ids = response.body as string[];
       expect(ids).toEqual(matchingIds);
