@@ -1,15 +1,19 @@
 {{- $releaseName := .Release.Name -}}
 {{- $chartName := include "heartbeat-manager.name" . -}}
+{{- $configmapName := include "configmap.fullname" . }}
+{{- $deploymentName := include "deployment.fullname" . }}
 {{- $cloudProviderFlavor := include "heartbeat-manager.cloudProviderFlavor" . -}}
 {{- $cloudProviderDockerRegistryUrl := include "heartbeat-manager.cloudProviderDockerRegistryUrl" . -}}
 {{- $cloudProviderImagePullSecretName := include "heartbeat-manager.cloudProviderImagePullSecretName" . -}}
 {{- $imageTag := include "heartbeat-manager.tag" . -}}
-{{ $postgresSecretName := ternary .Values.sharedData.db.secrets.externalSecretName (printf "%s%s" .Release.Name "-postgres-secret") .Values.sharedData.db.secrets.useExternal }}
+{{- $db := (include "common.db.merged" .) | fromYaml }}
+
+{{ $postgresSecretName := ternary $db.secrets.externalSecretName (printf "%s%s" .Release.Name "-postgres-secret") $db.secrets.useExternal }}
 {{- if .Values.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $releaseName }}-deployment
+  name: {{ $deploymentName }}
   labels:
     app: {{ $chartName }}
     component: {{ $chartName }}
@@ -58,7 +62,7 @@ spec:
                 secretKeyRef:
                   name: {{ $postgresSecretName }}
                   key: password
-            {{- if .Values.sharedData.db.sslEnabled }}
+            {{- if $db.sslEnabled }}
             - name: DB_SSL_CA
               value: "/opt/certs/ca/ca.pem"
             - name: DB_SSL_KEY
@@ -68,7 +72,7 @@ spec:
             {{- end }}
           envFrom:
             - configMapRef:
-                name: {{ $releaseName }}-configmap
+                name: {{ $configmapName }}
           ports:
             - name: http
               containerPort: {{ .Values.env.targetPort }}
@@ -83,7 +87,7 @@ spec:
             {{- toYaml .Values.resources.value | nindent 12 }}
           {{- end }}
           volumeMounts:
-          {{- if .Values.sharedData.db.sslEnabled }}
+          {{- if $db.sslEnabled }}
             - name: ca-file
               mountPath: "/opt/certs/ca/ca.pem"
               subPath: ca.pem
@@ -95,7 +99,7 @@ spec:
               subPath: cert.pem
           {{- end }}
       volumes:
-        {{- if .Values.sharedData.db.sslEnabled }}
+        {{- if $db.sslEnabled }}
         - name: ca-file
           secret:
             secretName: {{ $postgresSecretName }}
