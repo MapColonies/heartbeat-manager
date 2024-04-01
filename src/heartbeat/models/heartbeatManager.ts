@@ -25,7 +25,7 @@ export class HeartbeatManager {
 
   @withSpanAsyncV4
   public async pulse(req: IPulseRequest): Promise<void> {
-    this.logger.debug(`received heartbeat pulse for ${req.id}`);
+    this.logger.info(`received heartbeat pulse for ${req.id}`);
     await this.heartbeatRepository.pulse(req.id);
   }
 
@@ -37,7 +37,7 @@ export class HeartbeatManager {
 
   @withSpanAsyncV4
   public async removeHeartbeats(req: RemoveHeartbeatsRequest): Promise<number> {
-    this.logger.debug(`removing heartbeats: ${req.join()}`);
+    this.logger.info(`removing heartbeats: ${req.join()}`);
     return this.heartbeatRepository.removeHeartbeats(req);
   }
 }
