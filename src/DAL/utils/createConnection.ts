@@ -1,8 +1,11 @@
 import { hostname } from 'os';
 import { readFileSync } from 'fs';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { Logger } from '@map-colonies/js-logger';
+import { container } from 'tsyringe';
 import { IDbConfig } from '../../common/interfaces';
 import { HeartbeatEntity } from '../entity/heartbeat';
+import { SERVICES } from '../../common/constants';
 
 export const createConnectionOptions = (dbConfig: IDbConfig): DataSourceOptions => {
   const { enableSslAuth, sslPaths, ...dataSourceOptions } = dbConfig;
@@ -23,7 +26,9 @@ export const createConnectionOptions = (dbConfig: IDbConfig): DataSourceOptions 
 };
 
 export const initConnection = async (dbConfig: IDbConfig): Promise<DataSource> => {
+  const logger = container.resolve<Logger>(SERVICES.LOGGER);
   const dataSource = new DataSource(createConnectionOptions(dbConfig));
   await dataSource.initialize();
+  logger.info('Initialized connection to DB');
   return dataSource;
 };
