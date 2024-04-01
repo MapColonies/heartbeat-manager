@@ -11,7 +11,7 @@ export default async (): Promise<void> => {
   });
   const schema = dataSourceOptions.schema !== undefined ? `"${dataSourceOptions.schema}"` : 'public';
   // it is not allowed to use parameters for create commands in postgresql :(
-  if (schema != undefined) {
+  if (schema !== 'public') {
     await connection.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);
   }
   await connection.query(`CREATE SCHEMA IF NOT EXISTS  ${schema}`);
