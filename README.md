@@ -87,5 +87,3 @@ To run the migration docker run the following command:
  docker run -it -e DB_USER=postgres  -e DB_PASSWORD=1234 -e DB_NAME=postgres -e DB_TYPE=postgres -e DB_HOST=localhost -e DB_PORT=5432 -e DB_SCHEMA=HeartbeatManager --rm --network host migration-image:vtag
 
 ```
-
-

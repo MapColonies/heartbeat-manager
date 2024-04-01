@@ -17,6 +17,7 @@ module.exports = {
   rootDir: '../../../.',
   testMatch: ['<rootDir>/tests/integration/**/*.spec.ts'],
   setupFiles: ['<rootDir>/tests/configurations/jest.setup.js'],
+  setupFilesAfterEnv: ['jest-openapi', '<rootDir>/tests/configurations/initJestOpenapi.setup.ts'],
   globalSetup: '<rootDir>/tests/configurations/integration/jest.globalSetup.ts',
   globalTeardown: '<rootDir>/tests/configurations/integration/jest.globalTeardown.ts',
   reporters: [
