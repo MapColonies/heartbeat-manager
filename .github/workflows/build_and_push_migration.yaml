@@ -1,13 +1,7 @@
-name: Build docker migration image and push it to registry
-
-
-
 on:  
-  pull_request:
-    # inputs:
-    #   reopistory:
-    #     required: false
-    #     type: string
+  push:
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
@@ -30,7 +24,7 @@ jobs:
 
       - name: Setup docker image name and downcase it
         run: |
-          export DOCKER_IMAGE_NAME="${{ secrets.ACR_URL }}/${{ github.event.repository.name }}-migration:v1.0.0"
+          export DOCKER_IMAGE_NAME="${{ secrets.ACR_URL }}/${{ github.event.repository.name }}-migration:${{ github.ref_name }}"
           echo "DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME,,}" >>${GITHUB_ENV}
         shell: bash
 
