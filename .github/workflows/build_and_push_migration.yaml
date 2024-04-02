@@ -30,7 +30,7 @@ jobs:
 
       - name: Setup docker image name and downcase it
         run: |
-          export DOCKER_IMAGE_NAME="${{ secrets.ACR_URL }}/${{ github.event.repository.name }}/migration:${{ github.ref_name }}"
+          export DOCKER_IMAGE_NAME="${{ secrets.ACR_URL }}/${{ github.event.repository.name }}-migration:v1.0.0"
           echo "DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME,,}" >>${GITHUB_ENV}
         shell: bash
 
