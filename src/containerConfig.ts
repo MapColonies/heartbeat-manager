@@ -34,6 +34,7 @@ export const registerExternalValues = async (options?: RegisterOptions): Promise
 
   const connectionOptions = config.get<IDbConfig>('typeOrm');
   const connection = await initConnection(connectionOptions);
+  logger.info('Connected to DB');
 
   tracing.start();
   const tracer = trace.getTracer(SERVICE_NAME);
