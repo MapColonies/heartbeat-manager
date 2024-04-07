@@ -10,7 +10,7 @@ import httpLogger from '@map-colonies/express-access-log-middleware';
 import { getTraceContexHeaderMiddleware } from '@map-colonies/telemetry';
 import { SERVICES } from './common/constants';
 import { IConfig } from './common/interfaces';
-import { RECORD_ROUTER_SYMBOL } from './heartbeat/routes/heartbeatRouter';
+import { HEARTBEAT_ROUTER_SYMBOL } from './heartbeat/routes/heartbeatRouter';
 
 @injectable()
 export class ServerBuilder {
@@ -19,7 +19,7 @@ export class ServerBuilder {
   public constructor(
     @inject(SERVICES.CONFIG) private readonly config: IConfig,
     @inject(SERVICES.LOGGER) private readonly logger: Logger,
-    @inject(RECORD_ROUTER_SYMBOL) private readonly heartbeatRouter: Router
+    @inject(HEARTBEAT_ROUTER_SYMBOL) private readonly heartbeatRouter: Router
   ) {
     this.serverInstance = express();
   }

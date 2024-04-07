@@ -34,7 +34,7 @@ paths:
       summary: creates or updates a heartbeat record for specified task id
       responses:
         '200':
-          description: ok
+          description: OK
   /heartbeat/remove:
     post:
       operationId: removeHeartbeatRecords

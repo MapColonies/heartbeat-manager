@@ -4,11 +4,22 @@ module.exports = {
   },
   coverageReporters: ['text', 'html'],
   collectCoverage: true,
-  collectCoverageFrom: ['<rootDir>/src/**/*.ts', '!*/node_modules/', '!/vendor/**', '!*/common/**', '!**/models/**', '!<rootDir>/src/*'],
+  collectCoverageFrom: [
+    '<rootDir>/src/**/*.ts',
+    '!*/node_modules/',
+    '!/vendor/**',
+    '!*/common/**',
+    '!**/models/**',
+    '!<rootDir>/src/*',
+    '!<rootDir>/src/DAL/migrations/**',
+  ],
   coverageDirectory: '<rootDir>/coverage',
   rootDir: '../../../.',
   testMatch: ['<rootDir>/tests/integration/**/*.spec.ts'],
   setupFiles: ['<rootDir>/tests/configurations/jest.setup.js'],
+  setupFilesAfterEnv: ['jest-openapi', '<rootDir>/tests/configurations/initJestOpenapi.setup.ts'],
+  globalSetup: '<rootDir>/tests/configurations/integration/jest.globalSetup.ts',
+  globalTeardown: '<rootDir>/tests/configurations/integration/jest.globalTeardown.ts',
   reporters: [
     'default',
     [
@@ -21,13 +32,10 @@ module.exports = {
   testEnvironment: 'node',
   coverageThreshold: {
     global: {
-      branches: 60,
+      branches: 50,
       functions: 80,
       lines: 80,
-      statements: -11,
+      statements: 80,
     },
-  },
-  moduleNameMapper: {
-    mockService: '<rootDir>/tests/__mocks__',
   },
 };

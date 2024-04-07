@@ -1,0 +1,36 @@
+on:  
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build_and_push_migration_docker:
+    name: Build and publish docker migration image to registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository from latest commit
+        uses: actions/checkout@v2
+
+      - name: Login to registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_URL }}
+          username: ${{ secrets.ACR_PUSH_USER }}
+          password: ${{ secrets.ACR_PUSH_TOKEN }}
+
+      - name: Setup docker image name and downcase it
+        run: |
+          export DOCKER_IMAGE_NAME="${{ secrets.ACR_URL }}/${{ github.event.repository.name }}-migration:${{ github.ref_name }}"
+          echo "DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME,,}" >>${GITHUB_ENV}
+        shell: bash
+
+      - name: Build docker migration image
+        run: docker build  -t ${{ env.DOCKER_IMAGE_NAME }} -f ./migrations.Dockerfile .
+
+      - name: Push docker image
+        run: docker push ${{ env.DOCKER_IMAGE_NAME }}
+
