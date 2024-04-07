@@ -31,7 +31,7 @@ export interface RegisterOptions {
 export const registerExternalValues = async (options?: RegisterOptions): Promise<DependencyContainer> => {
   const loggerConfig = config.get<LoggerOptions>('telemetry.logger');
   const logger = jsLogger({ ...loggerConfig, prettyPrint: loggerConfig.prettyPrint, mixin: getOtelMixin() });
-
+  logger.info('registering external values');
   const connectionOptions = config.get<IDbConfig>('typeOrm');
   const connection = await initConnection(connectionOptions);
   logger.info('Connected to DB');
