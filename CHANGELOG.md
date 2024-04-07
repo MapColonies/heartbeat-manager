@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/MapColonies/heartbeat-manager/compare/v1.3.0...v1.4.0) (2024-04-07)
+
+
+### Features
+
+* Typeorm modification (MAPCO-4071 , MAPCO-4089 , MAPCO-4090) ([#30](https://github.com/MapColonies/heartbeat-manager/issues/30)) ([b9445e4](https://github.com/MapColonies/heartbeat-manager/commit/b9445e451e36d37b4f921640e18f906988f30c8b))
+
 ## [1.3.0](https://github.com/MapColonies/heartbeat-manager/compare/v1.2.0...v1.3.0) (2024-03-31)
 
 
