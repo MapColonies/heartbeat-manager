@@ -6,13 +6,13 @@ import jsLogger, { LoggerOptions } from '@map-colonies/js-logger';
 import { DataSource } from 'typeorm';
 import { HealthCheck } from '@godaddy/terminus';
 import { instanceCachingFactory } from 'tsyringe';
+import { racePromiseWithTimeout } from '@map-colonies/mc-utils';
 import { SERVICES, SERVICE_NAME, DB_CONNECTION_TIMEOUT } from './common/constants';
 import { tracing } from './common/tracing';
 import { InjectionObject, registerDependencies } from './common/dependencyRegistration';
 import { heartbeatRouterFactory, HEARTBEAT_ROUTER_SYMBOL } from './heartbeat/routes/heartbeatRouter';
 import { IDbConfig } from './common/interfaces';
 import { initConnection } from './DAL/utils/createConnection';
-import { promiseTimeout } from './common/utils';
 import { HEARTBEAT_REPOSITORY_SYMBOL, heartbeatRepositoryFactory } from './DAL/repositories/heartbeatRepository';
 
 const healthCheck = (connection: DataSource): HealthCheck => {
@@ -20,7 +20,7 @@ const healthCheck = (connection: DataSource): HealthCheck => {
     const check = connection.query('SELECT 1').then(() => {
       return;
     });
-    return promiseTimeout<void>(DB_CONNECTION_TIMEOUT, check);
+    return racePromiseWithTimeout<void>(DB_CONNECTION_TIMEOUT, check);
   };
 };
 export interface RegisterOptions {
