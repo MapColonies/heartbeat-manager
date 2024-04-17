@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/MapColonies/heartbeat-manager/compare/v1.4.0...v1.4.1) (2024-04-17)
+
+
+### Bug Fixes
+
+* prettryLog added to values as exists on configmap ([#31](https://github.com/MapColonies/heartbeat-manager/issues/31)) ([eff545f](https://github.com/MapColonies/heartbeat-manager/commit/eff545f4abd0098dddff186927822cca8d5adf6f))
+
 ## [1.4.0](https://github.com/MapColonies/heartbeat-manager/compare/v1.3.0...v1.4.0) (2024-04-07)
 
 
