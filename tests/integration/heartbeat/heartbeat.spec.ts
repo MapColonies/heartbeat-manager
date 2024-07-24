@@ -91,4 +91,22 @@ describe('heartbeat', function () {
       expect(response.status).toBe(httpStatusCodes.BAD_REQUEST);
     });
   });
+
+  describe('GetHeartbeat', function () {
+    describe('Happy path', function () {
+      it('if heartbeat exist for id, should return 200 with heartbeat row', async () => {
+        await requestSender.pulse('1');
+        const response = await requestSender.getHeartbeat('1');
+        expect(response.body.id).toBe('1');
+      });
+    });
+
+    describe('Sad path', function () {
+      it("if heartbeat doesn't exist for id, should return 404 according message", async () => {
+        await requestSender.pulse('1');
+        const response = await requestSender.getHeartbeat('ff7571b4-2750-4e7e-897e-d48e9b588f11');
+        expect(response.status).toBe(httpStatusCodes.NOT_FOUND);
+      });
+    });
+  });
 });

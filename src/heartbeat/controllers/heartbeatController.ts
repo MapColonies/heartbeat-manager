@@ -1,14 +1,22 @@
 import { Logger } from '@map-colonies/js-logger';
+import { NotFoundError } from '@map-colonies/error-types';
 import { BoundCounter } from '@opentelemetry/api-metrics';
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status-codes';
 import { injectable, inject } from 'tsyringe';
 import { SERVICES } from '../../common/constants';
-import { HeartbeatManager, IGetExpiredHeartbeatsRequest, IPulseRequest, RemoveHeartbeatsRequest } from '../models/heartbeatManager';
+import {
+  HeartbeatManager,
+  IGetExpiredHeartbeatsRequest,
+  IgetHeartbeatResponse,
+  IPulseRequest,
+  RemoveHeartbeatsRequest,
+} from '../models/heartbeatManager';
 
 type PulseHandler = RequestHandler<IPulseRequest>;
 type GetExpiredHeartbeatsHandler = RequestHandler<IGetExpiredHeartbeatsRequest, string[]>;
 type RemoveHeartbeatHandler = RequestHandler<undefined, undefined, RemoveHeartbeatsRequest>;
+type GetHeartbeatHandler = RequestHandler<IgetHeartbeatResponse>;
 
 @injectable()
 export class HeartbeatController {
@@ -41,6 +49,18 @@ export class HeartbeatController {
     try {
       await this.manager.removeHeartbeats(req.body);
       return res.sendStatus(httpStatus.OK);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getHeartbeatByTaskId: GetHeartbeatHandler = async (req, res, next) => {
+    try {
+      const record = await this.manager.GetHeartbeatById(req.params);
+      if (record === null) {
+        throw new NotFoundError('No heartbeat found for task');
+      }
+      return res.status(httpStatus.OK).json(record);
     } catch (err) {
       next(err);
     }

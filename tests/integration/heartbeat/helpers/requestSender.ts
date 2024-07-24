@@ -14,4 +14,8 @@ export class HeartbeatRequestSender {
   public async removeHeartbeats(ids: string[] | Record<string, unknown>): Promise<supertest.Response> {
     return supertest.agent(this.app).post(`/heartbeat/remove`).set('Content-Type', 'application/json').send(ids);
   }
+
+  public async getHeartbeat(id: string): Promise<supertest.Response> {
+    return supertest.agent(this.app).get(`/heartbeat/${id}`).set('Content-Type', 'application/json');
+  }
 }
