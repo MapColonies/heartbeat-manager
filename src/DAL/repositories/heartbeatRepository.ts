@@ -1,4 +1,4 @@
-import { Equal, LessThan } from 'typeorm';
+import { LessThan } from 'typeorm';
 import { FactoryFunction } from 'tsyringe';
 import { DataSource } from 'typeorm';
 import { HeartbeatEntity } from '../entity/heartbeat';
@@ -27,10 +27,8 @@ const createHeartbeatRepository = (dataSource: DataSource) => {
       return deleted.length;
     },
 
-    async getHeartbeat(_id: string): Promise<HeartbeatEntity | null> {
-      const entity = await this.findOneBy({
-        id: Equal(_id),
-      });
+    async getHeartbeat(id: string): Promise<HeartbeatEntity | null> {
+      const entity = await this.findOneBy({ id });
       return entity;
     },
   });

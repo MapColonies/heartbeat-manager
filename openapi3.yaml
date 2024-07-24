@@ -80,10 +80,11 @@ components:
     id:
       in: path
       name: id
-      description: task to log/get heartbeat for
+      description: the id of the heartbeat (task)
       required: true
       schema:
         type: string
+        format: uuid
   schemas:
     idList:
       type: array
@@ -103,7 +104,7 @@ components:
     errorMessage:
       type: object
       properties:
-        'message:':
+        message:
           type: string
         stacktrace:
           type: string

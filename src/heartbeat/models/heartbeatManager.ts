@@ -17,7 +17,7 @@ export interface IGetHeartbeatRequest {
   id: string;
 }
 
-export interface IgetHeartbeatResponse {
+export interface IGetHeartbeatResponse {
   id: string;
   lastHeartbeat: Date;
 }
