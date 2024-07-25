@@ -51,7 +51,7 @@ export class HeartbeatManager {
   }
 
   @withSpanAsyncV4
-  public async GetHeartbeatById(req: IGetHeartbeatRequest): Promise<IgetHeartbeatResponse | null> {
+  public async GetHeartbeatById(req: IGetHeartbeatRequest): Promise<IGetHeartbeatResponse | null> {
     this.logger.info(`retrieving heartbeat for id: ${req.id}`);
     return this.heartbeatRepository.getHeartbeat(req.id);
   }

@@ -8,7 +8,7 @@ import { SERVICES } from '../../common/constants';
 import {
   HeartbeatManager,
   IGetExpiredHeartbeatsRequest,
-  IgetHeartbeatResponse,
+  IGetHeartbeatResponse,
   IPulseRequest,
   RemoveHeartbeatsRequest,
 } from '../models/heartbeatManager';
@@ -16,7 +16,7 @@ import {
 type PulseHandler = RequestHandler<IPulseRequest>;
 type GetExpiredHeartbeatsHandler = RequestHandler<IGetExpiredHeartbeatsRequest, string[]>;
 type RemoveHeartbeatHandler = RequestHandler<undefined, undefined, RemoveHeartbeatsRequest>;
-type GetHeartbeatHandler = RequestHandler<IgetHeartbeatResponse>;
+type GetHeartbeatHandler = RequestHandler<IGetHeartbeatResponse>;
 
 @injectable()
 export class HeartbeatController {
