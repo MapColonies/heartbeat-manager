@@ -90,14 +90,16 @@ components:
       type: array
       items:
         type: string
+        format: uuid
       example:
-        - id1
-        - id2
+        - 12d46a20-dd38-411d-9aa2-1a5769114e3f
+        - c03912ab-4ea6-4da5-8f82-ee5a82e80034
     heartbeatRecord:
       type: object
       properties:
         id:
-          type: number
+          type: string
+          format: uuid
         lastHeartbeat:
           type: string
           format: date-time
