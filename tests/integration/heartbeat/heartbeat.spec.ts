@@ -44,22 +44,24 @@ describe('heartbeat', function () {
 
   describe('Happy Path', function () {
     it('pulse should return 200 status code and save the heartbeat pulse', async function () {
-      const id = '1';
+      const id = '513a40b2-783f-4c82-bd1a-5b6a7aca75d5';
       saveSpy = jest.spyOn(repo, 'save');
       const response = await requestSender.pulse(id);
       //TODO: fix code to enable toSatisfyApiSpec to work
       //expect(response).toSatisfyApiSpec();
       expect(response.status).toBe(httpStatusCodes.OK);
       expect(saveSpy).toHaveBeenCalledTimes(1);
+
+      requestSender.removeHeartbeats([id]);
     });
 
     it('getExpiredHeartbeats should return status 200 and the expired tasks', async function () {
       const duration = 1;
-      const matchingIds = ['1', '2'];
+      const matchingIds = ['7e4eccd1-6bb4-4a52-92c2-2c97bf40219a', '48adcc03-f0a9-4722-b330-a676b140fecc'];
       saveSpy = jest.spyOn(repo, 'save');
       findSpy = jest.spyOn(repo, 'find');
-      await requestSender.pulse('1');
-      await requestSender.pulse('2');
+      await requestSender.pulse('7e4eccd1-6bb4-4a52-92c2-2c97bf40219a');
+      await requestSender.pulse('48adcc03-f0a9-4722-b330-a676b140fecc');
 
       const response = await requestSender.getExpiredHeartbeats(duration);
       //TODO: fix code to enable toSatisfyApiSpec to work
@@ -68,10 +70,12 @@ describe('heartbeat', function () {
       const ids = response.body as string[];
       expect(ids).toEqual(matchingIds);
       expect(findSpy).toHaveBeenCalledTimes(1);
+
+      requestSender.removeHeartbeats(matchingIds);
     });
 
     it('removeHeartbeats should return 200 status code and remove records from db', async () => {
-      const ids = ['id1', 'id2'];
+      const ids = ['ef6ae24e-cd72-48e6-95bc-6c16444dc33c', '44a01903-c984-4021-8f7f-82efe871c5fe'];
       const response = await requestSender.removeHeartbeats(ids);
 
       //TODO: fix code to enable toSatisfyApiSpec to work
@@ -90,22 +94,42 @@ describe('heartbeat', function () {
 
       expect(response.status).toBe(httpStatusCodes.BAD_REQUEST);
     });
+
+    it('post heartbeat should return 400 if given heartbeat id is not uuid, ', async () => {
+      const badId = '1';
+
+      const response = await requestSender.pulse(badId);
+      expect(response.status).toBe(httpStatusCodes.BAD_REQUEST);
+    });
   });
 
   describe('GetHeartbeat', function () {
     describe('Happy path', function () {
       it('if heartbeat exist for id, should return 200 with heartbeat row', async () => {
-        await requestSender.pulse('1');
-        const response = await requestSender.getHeartbeat('1');
-        expect(response.body.id).toBe('1');
+        const id = '720d1a04-5a9e-4a3e-beba-6fe980fca516';
+
+        await requestSender.pulse(id);
+        const response = await requestSender.getHeartbeat(id);
+        expect(response.body.id).toBe(id);
+        expect(new Date(response.body.lastHeartbeat)).toBeInstanceOf(Date);
+
+        requestSender.removeHeartbeats([id]);
       });
     });
 
     describe('Sad path', function () {
-      it("if heartbeat doesn't exist for id, should return 404 according message", async () => {
-        await requestSender.pulse('1');
-        const response = await requestSender.getHeartbeat('ff7571b4-2750-4e7e-897e-d48e9b588f11');
+      it("if heartbeat doesn't exist for id, should return 404", async () => {
+        const missingId = '70183521-94ae-4a74-984f-8863c125b0b5';
+
+        const response = await requestSender.getHeartbeat(missingId);
         expect(response.status).toBe(httpStatusCodes.NOT_FOUND);
+      });
+
+      it('if given heartbeat id is not uuid, should return 400', async () => {
+        const badId = '1';
+
+        const response = await requestSender.getHeartbeat(badId);
+        expect(response.status).toBe(httpStatusCodes.BAD_REQUEST);
       });
     });
   });
