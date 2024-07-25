@@ -1,4 +1,5 @@
 import { Logger } from '@map-colonies/js-logger';
+import { NotFoundError } from '@map-colonies/error-types';
 import { inject, injectable } from 'tsyringe';
 import { Tracer } from '@opentelemetry/api';
 import { withSpanAsyncV4 } from '@map-colonies/telemetry';
@@ -51,8 +52,12 @@ export class HeartbeatManager {
   }
 
   @withSpanAsyncV4
-  public async GetHeartbeatById(req: IGetHeartbeatRequest): Promise<IGetHeartbeatResponse | null> {
-    this.logger.info(`retrieving heartbeat for id: ${req.id}`);
-    return this.heartbeatRepository.getHeartbeat(req.id);
+  public async getHeartbeatById(id: string): Promise<IGetHeartbeatResponse | null> {
+    this.logger.info(`retrieving heartbeat for id: ${id}`);
+    const res = await this.heartbeatRepository.getHeartbeat(id);
+    if (res === null) {
+      throw new NotFoundError(`No heartbeat found for task: ${id}`);
+    }
+    return res;
   }
 }
