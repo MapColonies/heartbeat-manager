@@ -4,11 +4,18 @@ import { RequestHandler } from 'express';
 import httpStatus from 'http-status-codes';
 import { injectable, inject } from 'tsyringe';
 import { SERVICES } from '../../common/constants';
-import { HeartbeatManager, IGetExpiredHeartbeatsRequest, IPulseRequest, RemoveHeartbeatsRequest } from '../models/heartbeatManager';
+import {
+  HeartbeatManager,
+  IGetExpiredHeartbeatsRequest,
+  IGetHeartbeatRequest,
+  IPulseRequest,
+  RemoveHeartbeatsRequest,
+} from '../models/heartbeatManager';
 
 type PulseHandler = RequestHandler<IPulseRequest>;
 type GetExpiredHeartbeatsHandler = RequestHandler<IGetExpiredHeartbeatsRequest, string[]>;
 type RemoveHeartbeatHandler = RequestHandler<undefined, undefined, RemoveHeartbeatsRequest>;
+type GetHeartbeatHandler = RequestHandler<IGetHeartbeatRequest>;
 
 @injectable()
 export class HeartbeatController {
@@ -41,6 +48,15 @@ export class HeartbeatController {
     try {
       await this.manager.removeHeartbeats(req.body);
       return res.sendStatus(httpStatus.OK);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getHeartbeatByTaskId: GetHeartbeatHandler = async (req, res, next) => {
+    try {
+      const record = await this.manager.getHeartbeatById(req.params.id);
+      return res.status(httpStatus.OK).json(record);
     } catch (err) {
       next(err);
     }

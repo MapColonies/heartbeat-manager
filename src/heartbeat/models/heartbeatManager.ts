@@ -1,4 +1,5 @@
 import { Logger } from '@map-colonies/js-logger';
+import { NotFoundError } from '@map-colonies/error-types';
 import { inject, injectable } from 'tsyringe';
 import { Tracer } from '@opentelemetry/api';
 import { withSpanAsyncV4 } from '@map-colonies/telemetry';
@@ -11,6 +12,15 @@ export interface IPulseRequest {
 
 export interface IGetExpiredHeartbeatsRequest {
   duration: number;
+}
+
+export interface IGetHeartbeatRequest {
+  id: string;
+}
+
+export interface IGetHeartbeatResponse {
+  id: string;
+  lastHeartbeat: Date;
 }
 
 export type RemoveHeartbeatsRequest = string[];
@@ -39,5 +49,15 @@ export class HeartbeatManager {
   public async removeHeartbeats(req: RemoveHeartbeatsRequest): Promise<number> {
     this.logger.info(`removing heartbeats: ${req.join()}`);
     return this.heartbeatRepository.removeHeartbeats(req);
+  }
+
+  @withSpanAsyncV4
+  public async getHeartbeatById(id: string): Promise<IGetHeartbeatResponse | null> {
+    this.logger.info(`retrieving heartbeat for id: ${id}`);
+    const res = await this.heartbeatRepository.getHeartbeat(id);
+    if (res === null) {
+      throw new NotFoundError(`No heartbeat found for task: ${id}`);
+    }
+    return res;
   }
 }

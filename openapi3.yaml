@@ -27,6 +27,24 @@ paths:
   /heartbeat/{id}:
     parameters:
       - $ref: '#/components/parameters/id'
+    get:
+      operationId: getHeartbeat
+      tags:
+        - Heartbeat
+      summary: returns the heartbeat record by Id if exists
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/heartbeatRecord'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorMessage'
     post:
       operationId: storeHeartbeat
       tags:
@@ -62,15 +80,35 @@ components:
     id:
       in: path
       name: id
-      description: task to log heartbeat for
+      description: the id of the heartbeat (task)
       required: true
       schema:
         type: string
+        format: uuid
   schemas:
     idList:
       type: array
       items:
         type: string
+        format: uuid
       example:
-        - id1
-        - id2
+        - 12d46a20-dd38-411d-9aa2-1a5769114e3f
+        - c03912ab-4ea6-4da5-8f82-ee5a82e80034
+    heartbeatRecord:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        lastHeartbeat:
+          type: string
+          format: date-time
+    errorMessage:
+      type: object
+      properties:
+        message:
+          type: string
+        stacktrace:
+          type: string
+      required:
+        - message

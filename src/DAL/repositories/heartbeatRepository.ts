@@ -26,6 +26,11 @@ const createHeartbeatRepository = (dataSource: DataSource) => {
       const deleted = await this.remove(entities);
       return deleted.length;
     },
+
+    async getHeartbeat(id: string): Promise<HeartbeatEntity | null> {
+      const entity = await this.findOneBy({ id });
+      return entity;
+    },
   });
 };
 

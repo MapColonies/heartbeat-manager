@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm';
 import httpStatusCodes from 'http-status-codes';
 import jsLogger from '@map-colonies/js-logger';
 import { trace } from '@opentelemetry/api';
+import { v4 as uuidv4 } from 'uuid';
 import { HeartbeatRepository, HEARTBEAT_REPOSITORY_SYMBOL } from '../../../src/DAL/repositories/heartbeatRepository';
 import { getApp } from '../../../src/app';
 import { SERVICES } from '../../../src/common/constants';
@@ -44,22 +45,24 @@ describe('heartbeat', function () {
 
   describe('Happy Path', function () {
     it('pulse should return 200 status code and save the heartbeat pulse', async function () {
-      const id = '1';
+      const id = uuidv4();
       saveSpy = jest.spyOn(repo, 'save');
       const response = await requestSender.pulse(id);
       //TODO: fix code to enable toSatisfyApiSpec to work
       //expect(response).toSatisfyApiSpec();
       expect(response.status).toBe(httpStatusCodes.OK);
       expect(saveSpy).toHaveBeenCalledTimes(1);
+
+      requestSender.removeHeartbeats([id]);
     });
 
     it('getExpiredHeartbeats should return status 200 and the expired tasks', async function () {
       const duration = 1;
-      const matchingIds = ['1', '2'];
+      const matchingIds = [uuidv4(), uuidv4()];
       saveSpy = jest.spyOn(repo, 'save');
       findSpy = jest.spyOn(repo, 'find');
-      await requestSender.pulse('1');
-      await requestSender.pulse('2');
+      await requestSender.pulse(matchingIds[0]);
+      await requestSender.pulse(matchingIds[1]);
 
       const response = await requestSender.getExpiredHeartbeats(duration);
       //TODO: fix code to enable toSatisfyApiSpec to work
@@ -68,10 +71,12 @@ describe('heartbeat', function () {
       const ids = response.body as string[];
       expect(ids).toEqual(matchingIds);
       expect(findSpy).toHaveBeenCalledTimes(1);
+
+      requestSender.removeHeartbeats(matchingIds);
     });
 
     it('removeHeartbeats should return 200 status code and remove records from db', async () => {
-      const ids = ['id1', 'id2'];
+      const ids = [uuidv4(), uuidv4()];
       const response = await requestSender.removeHeartbeats(ids);
 
       //TODO: fix code to enable toSatisfyApiSpec to work
@@ -83,12 +88,48 @@ describe('heartbeat', function () {
   describe('Bad Path', function () {
     it('removeHeartbeats should return 400 when data is not string array', async () => {
       const data = {
-        id: 'id1',
+        id: uuidv4(),
       };
 
       const response = await requestSender.removeHeartbeats(data);
-
       expect(response.status).toBe(httpStatusCodes.BAD_REQUEST);
+    });
+
+    it('post heartbeat should return 400 if given heartbeat id is not uuid, ', async () => {
+      const badId = '1';
+      const response = await requestSender.pulse(badId);
+      expect(response.status).toBe(httpStatusCodes.BAD_REQUEST);
+    });
+  });
+
+  describe('GetHeartbeat', function () {
+    describe('Happy path', function () {
+      it('if heartbeat exist for id, should return 200 with heartbeat row', async () => {
+        const id = uuidv4();
+
+        await requestSender.pulse(id);
+        const response = await requestSender.getHeartbeat(id);
+        expect(response.body.id).toBe(id);
+        expect(new Date(response.body.lastHeartbeat)).toBeInstanceOf(Date);
+
+        requestSender.removeHeartbeats([id]);
+      });
+    });
+
+    describe('Bad path', function () {
+      it("if heartbeat doesn't exist for id, should return 404", async () => {
+        const missingId = uuidv4();
+
+        const response = await requestSender.getHeartbeat(missingId);
+        expect(response.status).toBe(httpStatusCodes.NOT_FOUND);
+      });
+
+      it('if given heartbeat id is not uuid, should return 400', async () => {
+        const badId = '1';
+
+        const response = await requestSender.getHeartbeat(badId);
+        expect(response.status).toBe(httpStatusCodes.BAD_REQUEST);
+      });
     });
   });
 });
