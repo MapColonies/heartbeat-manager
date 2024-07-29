@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/MapColonies/heartbeat-manager/compare/v1.4.1...v1.5.0) (2024-07-29)
+
+
+### Features
+
+* added get-heartbeat route ([#32](https://github.com/MapColonies/heartbeat-manager/issues/32)) ([2ccabe0](https://github.com/MapColonies/heartbeat-manager/commit/2ccabe07783b100e50ec496697b97950fe9fa642))
+
 ### [1.4.1](https://github.com/MapColonies/heartbeat-manager/compare/v1.4.0...v1.4.1) (2024-04-17)
 
 
