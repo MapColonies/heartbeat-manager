@@ -5,6 +5,6 @@ on: [pull_request]
 jobs:
   pull_request:
     uses: MapColonies/shared-workflows/.github/workflows/pull_request.yaml@add-postgres-pr
-    # with:
-    #   usePostgres: true
+    with:
+      usePostgres: true
     secrets: inherit
