@@ -53,7 +53,7 @@ describe('heartbeat', function () {
       expect(response.status).toBe(httpStatusCodes.OK);
       expect(saveSpy).toHaveBeenCalledTimes(1);
 
-      requestSender.removeHeartbeats([id]);
+      await requestSender.removeHeartbeats([id]);
     });
 
     it('getExpiredHeartbeats should return status 200 and the expired tasks', async function () {
@@ -72,7 +72,7 @@ describe('heartbeat', function () {
       expect(ids).toEqual(matchingIds);
       expect(findSpy).toHaveBeenCalledTimes(1);
 
-      requestSender.removeHeartbeats(matchingIds);
+      await requestSender.removeHeartbeats(matchingIds);
     });
 
     it('removeHeartbeats should return 200 status code and remove records from db', async () => {
@@ -95,7 +95,7 @@ describe('heartbeat', function () {
       expect(response.status).toBe(httpStatusCodes.BAD_REQUEST);
     });
 
-    it('post heartbeat should return 400 if given heartbeat id is not uuid, ', async () => {
+    it('post heartbeat should return 400 if given heartbeat id is not uuid', async () => {
       const badId = '1';
       const response = await requestSender.pulse(badId);
       expect(response.status).toBe(httpStatusCodes.BAD_REQUEST);
@@ -109,10 +109,11 @@ describe('heartbeat', function () {
 
         await requestSender.pulse(id);
         const response = await requestSender.getHeartbeat(id);
-        expect(response.body.id).toBe(id);
+        expect(response.body).toHaveProperty('id', id);
+        expect(response.body).toHaveProperty('lastHeartbeat');
         expect(new Date(response.body.lastHeartbeat)).toBeInstanceOf(Date);
 
-        requestSender.removeHeartbeats([id]);
+        await requestSender.removeHeartbeats([id]);
       });
     });
 
