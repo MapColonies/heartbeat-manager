@@ -111,7 +111,6 @@ describe('heartbeat', function () {
         const response = await requestSender.getHeartbeat(id);
         expect(response.body).toHaveProperty('id', id);
         expect(response.body).toHaveProperty('lastHeartbeat');
-        expect(new Date(response.body.lastHeartbeat)).toBeInstanceOf(Date);
 
         await requestSender.removeHeartbeats([id]);
       });
