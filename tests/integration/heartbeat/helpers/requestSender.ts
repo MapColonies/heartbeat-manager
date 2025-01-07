@@ -1,4 +1,5 @@
 import * as supertest from 'supertest';
+import { IGetHeartbeatResponse } from '../../../../src/heartbeat/models/heartbeatManager';
 
 export class HeartbeatRequestSender {
   public constructor(private readonly app: Express.Application) {}
@@ -15,7 +16,7 @@ export class HeartbeatRequestSender {
     return supertest.agent(this.app).post(`/heartbeat/remove`).set('Content-Type', 'application/json').send(ids);
   }
 
-  public async getHeartbeat(id: string): Promise<supertest.Response> {
+  public async getHeartbeat(id: string): Promise<{ body: IGetHeartbeatResponse } & Omit<Awaited<supertest.Response>, 'body'>> {
     return supertest.agent(this.app).get(`/heartbeat/${id}`).set('Content-Type', 'application/json');
   }
 }
